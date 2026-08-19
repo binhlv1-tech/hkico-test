@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HKICO Coding Challenge 2026</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        cyber: {
+          dark: '#060911',
+          card: '#121824',
+          cyan: '#00f0ff',
+          purple: '#7000ff',
+          pink: '#ff007f',
+          success: '#00ff88',
+          danger: '#ff2a6d'
+        }
+      }
+    }
+  }
+}
+</script>
+
+<style>
+body { background:#060911; color:#f1f5f9; font-family:'Inter', system-ui, -apple-system, sans-serif; overflow-x:hidden; }
+.glass { background:rgba(18,24,36,.9); border:1px solid rgba(255,255,255,.08); box-shadow:0 8px 30px rgba(0,0,0,.35); backdrop-filter: blur(12px); }
+.option-card { transition: all 0.2s ease; }
+.option-card:hover { transform:translateY(-2px); border-color:#00f0ff; background: rgba(0,240,255,0.05); }
+.option-card.selected { border-color:#00f0ff; background:rgba(0,240,255,.15); box-shadow: 0 0 15px rgba(0,240,255,0.2); }
+.option-card.correct { border-color:#00ff88!important; background:rgba(0,255,136,.15)!important; box-shadow: 0 0 15px rgba(0,255,136,0.2)!important; }
+.option-card.incorrect { border-color:#ff2a6d!important; background:rgba(255,42,109,.15)!important; box-shadow: 0 0 15px rgba(255,42,109,0.2)!important; }
+textarea { min-height:160px; }
+pre { white-space:pre-wrap; }
+
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #060911; }
+::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #00f0ff; }
+</style>
+</head>
+
+<body class="min-h-screen flex flex-col justify-between selection:bg-cyan-500 selection:text-black">
+
+<!-- HEADER -->
+<header id="appHeader" class="hidden sticky top-0 z-40 bg-slate-950/95 backdrop-blur border-b border-slate-800 shadow-lg">
+  <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
+    <div class="flex items-center space-x-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-400 to-purple-600 p-0.5 flex items-center justify-center font-black text-slate-950">
+        HK
+      </div>
+      <div>
+        <div class="font-black text-cyan-400 tracking-wider text-sm md:text-base">HKICO CODING CHALLENGE</div>
+        <div class="text-xs text-slate-400">
+          <span id="headerName" class="text-slate-200 font-semibold">Thí sinh</span> •
+          <span id="headerClass" class="text-purple-400 font-semibold">Lớp</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2 md:gap-3 text-xs md:text-sm font-mono">
+      <div class="bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-800">
+        LEVEL <span id="levelDisplay" class="text-cyan-400 font-bold">1/5</span>
+      </div>
+      <div class="bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-800">
+        ⚡ <span id="xpDisplay" class="text-amber-400 font-bold">0 XP</span>
+      </div>
+      <div class="bg-slate-900 px-3 py-1.5 rounded-lg border border-cyan-500/40 text-cyan-400 font-bold">
+        ⏱ <span id="timerDisplay">60:00</span>
+      </div>
+      <button onclick="openTeacherLogin()" class="px-3 py-1.5 rounded-lg bg-purple-600/80 hover:bg-purple-500 text-white font-sans text-xs font-semibold transition-colors flex items-center gap-1">
+        <span>👨‍🏫</span> <span class="hidden sm:inline">Giáo viên</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="h-1 bg-slate-900 w-full">
+    <div id="progressBar" class="h-full bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 w-0 transition-all duration-300"></div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section id="heroScreen" class="min-h-[85vh] flex items-center justify-center px-4 my-auto py-8">
+  <div class="max-w-4xl text-center">
+    <div class="inline-block mb-6 px-4 py-2 rounded-full border border-cyan-500/40 text-cyan-400 text-xs md:text-sm font-semibold tracking-wide uppercase bg-cyan-950/30">
+      🔥 ĐỊNH HƯỚNG HKICO 2026
+    </div>
+
+    <h1 class="text-4xl md:text-7xl font-black mb-5 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 text-transparent bg-clip-text tracking-tight">
+      HKICO CODING CHALLENGE
+    </h1>
+
+    <p class="text-lg md:text-2xl text-slate-300 font-medium mb-3">
+      60 phút khám phá năng lực lập trình của bạn
+    </p>
+
+    <blockquote class="text-slate-400 italic mb-10 max-w-xl mx-auto border-l-2 border-cyan-400 pl-4 text-left sm:text-center sm:border-l-0">
+      “Không cần biết tất cả. Hãy cho chúng tôi thấy cách bạn suy nghĩ.”
+    </blockquote>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+      <div class="glass rounded-2xl p-5 border border-slate-800 hover:border-cyan-500/50 transition">
+        <div class="text-3xl mb-2">🧠</div>
+        <h3 class="font-bold text-cyan-400 text-lg">Logic</h3>
+        <p class="text-xs text-slate-400 mt-1">Tìm quy luật và phán đoán suy luận.</p>
+      </div>
+      <div class="glass rounded-2xl p-5 border border-slate-800 hover:border-purple-500/50 transition">
+        <div class="text-3xl mb-2">💻</div>
+        <h3 class="font-bold text-purple-400 text-lg">Coding</h3>
+        <p class="text-xs text-slate-400 mt-1">Python cơ bản, biến và vòng lặp.</p>
+      </div>
+      <div class="glass rounded-2xl p-5 border border-slate-800 hover:border-pink-500/50 transition">
+        <div class="text-3xl mb-2">🚀</div>
+        <h3 class="font-bold text-pink-400 text-lg">Problem Solving</h3>
+        <p class="text-xs text-slate-400 mt-1">Thuật toán và giải quyết bài toán tự luận.</p>
+      </div>
+    </div>
+
+    <button onclick="showScreen('registrationScreen')" class="px-8 py-4 rounded-xl bg-gradient-to-r from-cyan-400 to-purple-600 text-slate-950 font-black text-lg hover:scale-105 active:scale-95 transition-all shadow-lg shadow-cyan-500/25">
+      BẮT ĐẦU CHALLENGE 🚀
+    </button>
+  </div>
+</section>
+
+<!-- REGISTRATION -->
+<section id="registrationScreen" class="hidden min-h-[80vh] flex items-center justify-center px-4 my-auto py-8">
+  <div class="glass max-w-md w-full p-8 rounded-2xl border border-cyan-500/30">
+    <div class="text-center mb-6">
+      <div class="text-4xl mb-2">⚡</div>
+      <h2 class="text-2xl font-black text-white">Bạn là ai?</h2>
+      <p class="text-slate-400 text-sm mt-1">Nhập thông tin cá nhân để bắt đầu thử thách.</p>
+    </div>
+
+    <form onsubmit="startChallenge(event)" class="space-y-4">
+      <div>
+        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Họ và Tên</label>
+        <input id="studentNameInput" required placeholder="Ví dụ: Nguyễn Văn A"
+          class="w-full p-3.5 rounded-xl bg-slate-900 border border-slate-700 text-white placeholder-slate-500 focus:border-cyan-400 focus:outline-none transition">
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Lớp</label>
+        <input id="studentClassInput" required placeholder="Ví dụ: 8A1"
+          class="w-full p-3.5 rounded-xl bg-slate-900 border border-slate-700 text-white placeholder-slate-500 focus:border-cyan-400 focus:outline-none transition">
+      </div>
+
+      <button type="submit" class="w-full mt-2 py-4 rounded-xl bg-gradient-to-r from-cyan-400 to-purple-600 text-slate-950 font-black text-base uppercase tracking-wider hover:opacity-95 active:scale-95 transition">
+        START MISSION 🚀
+      </button>
+    </form>
+  </div>
+</section>
+
+<!-- CHALLENGE QUESTION ENGINE -->
+<main id="challengeScreen" class="hidden max-w-3xl mx-auto px-4 py-8 w-full flex-grow">
+  <!-- Level Banner -->
+  <div class="glass p-5 rounded-2xl mb-5 flex justify-between items-center border border-slate-800">
+    <div>
+      <div id="levelText" class="text-cyan-400 text-xs font-bold uppercase tracking-wider">LEVEL 1</div>
+      <h2 id="levelTitle" class="text-lg md:text-xl font-black text-white">WARM UP</h2>
+    </div>
+    <div class="text-right">
+      <div class="text-xs text-slate-400">Tiến độ câu</div>
+      <div id="questionProgress" class="text-purple-400 font-bold font-mono">1/10</div>
+    </div>
+  </div>
+
+  <!-- Question Card -->
+  <div class="glass p-6 md:p-8 rounded-2xl border border-slate-800 relative">
+    <div class="flex justify-between items-center gap-3 mb-5">
+      <span id="categoryTag" class="px-3 py-1 rounded-full bg-slate-800 text-cyan-400 text-xs font-semibold"></span>
+      <span id="xpTag" class="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold font-mono"></span>
+    </div>
+
+    <h3 id="questionText" class="text-base md:text-lg font-semibold leading-relaxed mb-4 text-slate-100"></h3>
+
+    <!-- Code Block -->
+    <pre id="codeBox" class="hidden p-4 rounded-xl bg-slate-950 border-l-4 border-cyan-400 text-cyan-300 font-mono text-xs md:text-sm mb-5 overflow-x-auto"></pre>
+
+    <!-- Options Container (MCQ) -->
+    <div id="optionsContainer" class="space-y-3 mb-5"></div>
+
+    <!-- Essay Container -->
+    <div id="essayContainer" class="hidden mb-5">
+      <textarea id="essayAnswer" placeholder="Viết câu trả lời, cách giải hoặc code Python của em tại đây..."
+        class="w-full p-4 rounded-xl bg-slate-950 border border-slate-700 focus:border-cyan-400 outline-none text-slate-200 text-sm font-mono"></textarea>
+      <p class="text-xs text-slate-400 mt-2 flex items-center gap-1">
+        <span>💡</span> Phần tự luận được lưu toàn bộ để giáo viên đánh giá tư duy & thuật toán của em.
+      </p>
+    </div>
+
+    <!-- Feedback Box -->
+    <div id="feedbackBox" class="hidden p-4 rounded-xl bg-slate-950 border border-slate-800 text-sm mb-5">
+      <div id="feedbackTitle" class="font-bold mb-1"></div>
+      <div id="feedbackText" class="text-xs md:text-sm text-slate-300"></div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex justify-between items-center pt-2">
+      <button id="prevBtn" onclick="previousQuestion()" class="px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold uppercase transition">
+        ← QUAY LẠI
+      </button>
+
+      <button id="actionBtn" onclick="lockAnswer()" class="px-6 py-3 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-black text-xs uppercase tracking-wider transition shadow-lg shadow-cyan-400/20">
+        LOCK ANSWER 🔒
+      </button>
+    </div>
+  </div>
+</main>
+
+<!-- RESULT -->
+<section id="resultScreen" class="hidden max-w-3xl mx-auto px-4 py-10 w-full my-auto">
+  <div class="glass rounded-2xl p-6 md:p-8 text-center border border-cyan-500/30">
+    <div class="text-6xl mb-3 animate-bounce">🏆</div>
+    <h2 class="text-3xl md:text-4xl font-black mb-1 text-white">MISSION COMPLETE!</h2>
+    <p class="text-slate-400 text-sm mb-8">Bạn đã hoàn thành HKICO Coding Challenge</p>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+      <div class="bg-slate-950/80 p-4 rounded-xl border border-slate-800">
+        <div class="text-slate-400 text-xs uppercase font-mono">THÍ SINH</div>
+        <div id="resName" class="font-bold text-white text-sm md:text-base mt-1 truncate"></div>
+      </div>
+      <div class="bg-slate-950/80 p-4 rounded-xl border border-slate-800">
+        <div class="text-slate-400 text-xs uppercase font-mono">KẾT QUẢ XP</div>
+        <div id="resXP" class="font-bold text-amber-400 text-sm md:text-base mt-1"></div>
+      </div>
+      <div class="bg-slate-950/80 p-4 rounded-xl border border-slate-800">
+        <div class="text-slate-400 text-xs uppercase font-mono">TRẮC NGHIỆM</div>
+        <div id="resCorrect" class="font-bold text-emerald-400 text-sm md:text-base mt-1"></div>
+      </div>
+      <div class="bg-slate-950/80 p-4 rounded-xl border border-slate-800">
+        <div class="text-slate-400 text-xs uppercase font-mono">THỜI GIAN</div>
+        <div id="resTime" class="font-bold text-cyan-400 text-sm md:text-base mt-1 font-mono"></div>
+      </div>
+    </div>
+
+    <div class="bg-cyan-950/20 border border-cyan-500/30 rounded-xl p-5 text-left mb-6">
+      <h3 class="text-cyan-400 font-bold mb-2 flex items-center gap-2 text-sm">
+        <span>💬</span> Nhận xét định hướng từ Chuyên gia:
+      </h3>
+      <p id="diagnosticText" class="text-slate-300 text-xs md:text-sm leading-relaxed"></p>
+    </div>
+
+    <div class="flex flex-col md:flex-row justify-center gap-3">
+      <button onclick="restartChallenge()" class="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs uppercase tracking-wider transition">
+        🔄 Làm lại
+      </button>
+      <button onclick="openTeacherLogin()" class="px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs uppercase tracking-wider transition shadow-lg shadow-purple-600/30">
+        👨‍🏫 Teacher Dashboard
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- TEACHER PIN MODAL -->
+<div id="teacherLoginModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+  <div class="glass max-w-md w-full rounded-2xl p-6 border border-purple-500/30">
+    <h2 class="text-xl font-black mb-1 text-white">👨‍🏫 Teacher Mode</h2>
+    <p class="text-xs text-slate-400 mb-4">Vui lòng nhập mã PIN bảo mật giáo viên để truy cập.</p>
+
+    <input id="teacherPinInput" type="password" placeholder="Mã PIN (Mặc định: HKICO2026)"
+      class="w-full p-3.5 rounded-xl bg-slate-900 border border-slate-700 text-white placeholder-slate-500 focus:border-purple-400 outline-none text-sm font-mono mb-4">
+
+    <div class="flex justify-end gap-3">
+      <button onclick="closeTeacherLogin()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold">Đóng</button>
+      <button onclick="verifyTeacherPin()" class="px-5 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-xl font-bold text-xs">Xác nhận</button>
+    </div>
+  </div>
+</div>
+
+<!-- TEACHER DASHBOARD MODAL -->
+<div id="teacherModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm p-4 overflow-y-auto">
+  <div class="glass max-w-6xl mx-auto rounded-2xl overflow-hidden my-6 border border-purple-500/30 shadow-2xl">
+    <div class="p-5 flex justify-between items-center border-b border-slate-800 bg-slate-950/80">
+      <div>
+        <h2 class="text-lg md:text-xl font-black text-white">👨‍🏫 TEACHER DASHBOARD</h2>
+        <p class="text-xs text-slate-400">Dữ liệu kết quả làm bài của học sinh (Realtime Firestore / LocalStorage)</p>
+      </div>
+      <button onclick="closeTeacherModal()" class="text-slate-400 hover:text-white p-2 text-xl font-bold">✕</button>
+    </div>
+
+    <div class="p-5 flex flex-wrap gap-3 justify-between items-center bg-slate-900/40">
+      <input id="searchInput" oninput="renderTeacherTable()" placeholder="🔍 Tìm theo tên hoặc lớp..."
+        class="p-2.5 px-4 rounded-xl bg-slate-900 border border-slate-700 text-white placeholder-slate-500 text-xs w-full sm:w-64 focus:border-cyan-400 outline-none">
+      <div class="flex gap-2">
+        <button onclick="exportCSV()" class="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-xl font-black text-xs uppercase tracking-wider transition">📥 Xuất CSV</button>
+        <button onclick="clearLocalData()" class="px-4 py-2.5 bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/30 rounded-xl text-xs font-semibold">Xóa Local</button>
+      </div>
+    </div>
+
+    <div class="overflow-x-auto p-5 pt-0">
+      <table class="w-full text-left text-xs md:text-sm">
+        <thead class="bg-slate-900/90 text-cyan-400 uppercase font-mono border-b border-slate-800">
+          <tr>
+            <th class="p-3">Họ và tên</th>
+            <th class="p-3">Lớp</th>
+            <th class="p-3 text-center">XP</th>
+            <th class="p-3 text-center">Trắc nghiệm</th>
+            <th class="p-3 text-center">Tự luận</th>
+            <th class="p-3 text-center">Thời gian</th>
+            <th class="p-3">Ngày nộp</th>
+            <th class="p-3 text-center">Thao tác</th>
+          </tr>
+        </thead>
+        <tbody id="teacherTableBody" class="divide-y divide-slate-800/60 font-mono text-slate-300"></tbody>
+      </table>
+      <div id="emptyDataMessage" class="hidden text-center text-slate-500 py-10 text-xs">Chưa có dữ liệu bài làm nào.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ESSAY DETAIL MODAL -->
+<div id="detailModal" class="hidden fixed inset-0 z-[60] bg-black/80 backdrop-blur-sm p-4 overflow-y-auto flex items-center justify-center">
+  <div class="glass max-w-3xl w-full mx-auto rounded-2xl p-6 my-6 border border-cyan-500/30 max-h-[85vh] overflow-y-auto">
+    <div class="flex justify-between items-center mb-5 border-b border-slate-800 pb-3">
+      <h2 class="text-lg font-black text-white">📝 Chi tiết bài làm tự luận</h2>
+      <button onclick="document.getElementById('detailModal').classList.add('hidden')" class="text-slate-400 hover:text-white text-xl font-bold">✕</button>
+    </div>
+    <div id="detailContent" class="space-y-4"></div>
+  </div>
+</div>
+
+<!-- CUSTOM ALERT / DIALOG MODAL -->
+<div id="customAlertModal" class="hidden fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+  <div class="glass max-w-sm w-full rounded-2xl p-6 border border-cyan-500/40 text-center space-y-4">
+    <div id="customAlertIcon" class="text-4xl">⚠️</div>
+    <p id="customAlertText" class="text-sm text-slate-200 leading-relaxed font-medium"></p>
+    <div id="customAlertButtons" class="flex justify-center gap-3 pt-2">
+      <button id="customAlertOkBtn" class="px-6 py-2 rounded-xl bg-cyan-400 text-slate-950 font-bold text-xs uppercase tracking-wider">
+        Đồng ý
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- FIREBASE MODULE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAL10_BjyyTtjhwm-luXzSgfTOQwzs8_CY",
+  authDomain: "hkico-afded.firebaseapp.com",
+  projectId: "hkico-afded",
+  storageBucket: "hkico-afded.firebasestorage.app",
+  messagingSenderId: "923197101471",
+  appId: "1:923197101471:web:9adeed81635ab10c2f99aa",
+  measurementId: "G-9RV6PDMJL4"
+};
+
+let db = null;
+let currentUser = null;
+window.isCloudReady = false;
+window.cloudStudentResults = [];
+
+try {
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  db = getFirestore(app);
+
+  signInAnonymously(auth)
+    .then((cred) => {
+      currentUser = cred.user;
+      window.isCloudReady = true;
+      setupRealtimeListener();
+    })
+    .catch((error) => console.warn("Lỗi Auth Firebase:", error));
+
+} catch (error) {
+  console.warn("Chạy ở chế độ offline LocalStorage:", error);
+}
+
+function setupRealtimeListener() {
+  onSnapshot(
+    collection(db, "student_results"),
+    (snapshot) => {
+      const records = [];
+      snapshot.forEach((doc) => records.push({ id: doc.id, ...doc.data() }));
+      records.sort((a,b) => (b.timestampMs || 0) - (a.timestampMs || 0));
+      window.cloudStudentResults = records;
+
+      if (window.isTeacherModalOpen && typeof window.renderTeacherTable === "function") {
+        window.renderTeacherTable();
+      }
+    },
+    (error) => console.warn("Lỗi đồng bộ Firestore:", error)
+  );
+}
+
+window.saveToCloudDatabase = async function(record) {
+  if (!db || !currentUser || !window.isCloudReady) return false;
+
+  try {
+    await addDoc(collection(db, "student_results"), {
+      ...record,
+      userId: currentUser.uid,
+      timestampMs: Date.now()
+    });
+    return true;
+  } catch (error) {
+    console.error("Lỗi gửi dữ liệu lên Cloud:", error);
+    return false;
+  }
+};
+</script>
+
+<!-- MAIN APP LOGIC -->
+<script>
+// =====================================================
+// CẤU HÌNH HỆ THỐNG
+// =====================================================
+const TEACHER_PIN = "HKICO2026";
+const TOTAL_TIME = 60 * 60; // 60 Phút
+
+const levels = [
+  { title:"WARM UP", subtitle:"Khởi động", icon:"🚀" },
+  { title:"LOGIC LAB", subtitle:"Tư duy logic", icon:"🧠" },
+  { title:"PYTHON CORE", subtitle:"Kiến thức Python", icon:"💻" },
+  { title:"DEBUG ZONE", subtitle:"Tìm và sửa lỗi", icon:"🐛" },
+  { title:"BOSS CHALLENGE", subtitle:"Tự luận thuật toán", icon:"🏆" }
+];
+
+// DỮ LIỆU CÂU HỎI (TRẮC NGHIỆM + TỰ LUẬN)
+const questionsData = [
+  {
+    level:0, category:"Logic", type:"mcq", skill:"logic", xp:10,
+    text:"Dãy số nào tiếp theo: 2, 4, 8, 16, ?",
+    options:["20","24","32","64"], answer:2,
+    explanation:"Mỗi số bằng số trước đó nhân với 2 (2^n)."
+  },
+  {
+    level:0, category:"Python Basics", type:"mcq", skill:"python", xp:10,
+    text:"Lệnh nào dùng để hiển thị dữ liệu ra màn hình trong Python?",
+    options:["input()","print()","show()","display()"], answer:1,
+    explanation:"Hàm print() dùng để xuất kết quả ra màn hình console."
+  },
+  {
+    level:1, category:"Logic", type:"mcq", skill:"logic", xp:15,
+    text:"Một vòng lặp thực hiện 5 lần, mỗi lần giá trị x tăng thêm 2. Giá trị ban đầu của x là 0. Kết quả của x là?",
+    options:["5","7","10","12"], answer:2,
+    explanation:"Ban đầu x = 0, sau 5 lần cộng 2: x = 0 + (2 × 5) = 10."
+  },
+  {
+    level:1, category:"Algorithm", type:"mcq", skill:"algorithm", xp:15,
+    text:"Để tìm phần tử có giá trị lớn nhất trong danh sách chưa sắp xếp, chiến lược đúng nhất là?",
+    options:[
+      "Chỉ kiểm tra phần tử đầu tiên",
+      "Duyệt qua lần lượt các phần tử và lưu lại giá trị lớn nhất",
+      "Xóa các phần tử nhỏ hơn 0",
+      "In danh sách ra màn hình"
+    ],
+    answer:1,
+    explanation:"Thuật toán tìm Max cần duyệt danh sách và so sánh từng phần tử với biến max_val."
+  },
+  {
+    level:2, category:"Python", type:"mcq", skill:"python", xp:20,
+    text:"Đoạn code sau in ra kết quả gì?",
+    code:"x = 5\nx = x + 3\nprint(x)",
+    options:["5","8","53","Lỗi cú pháp"], answer:1,
+    explanation:"Phép gán x = x + 3 lấy giá trị x hiện tại (5) cộng 3 thành 8."
+  },
+  {
+    level:2, category:"Python", type:"mcq", skill:"python", xp:20,
+    text:"Giá trị của len([10, 20, 30, 40]) trong Python là bao nhiêu?",
+    options:["3","4","10","40"], answer:1,
+    explanation:"Hàm len() trả về số lượng phần tử trong danh sách (ở đây có 4 phần tử)."
+  },
+  {
+    level:3, category:"Debug", type:"mcq", skill:"debug", xp:25,
+    text:"Đoạn code Python sau bị mắc lỗi gì?",
+    code:"for i in range(5)\n    print(i)",
+    options:[
+      "Thiếu dấu hai chấm (:) ở cuối dòng câu lệnh for",
+      "Thiếu dấu ngoặc đơn ở print",
+      "Cú pháp câu lệnh print sai",
+      "Không thể chạy vòng lặp với range"
+    ],
+    answer:0,
+    explanation:"Trong Python, các câu lệnh khối như for, if, while bắt buộc phải có dấu hai chấm (:) cuối dòng header."
+  },
+  {
+    level:3, category:"Debug", type:"mcq", skill:"debug", xp:25,
+    text:"Đoạn code sau sẽ sinh ra loại lỗi nào khi thực thi?",
+    code:"numbers = [1, 2, 3]\nprint(numbers[3])",
+    options:[
+      "Không có lỗi nào",
+      "IndexError: list index out of range",
+      "SyntaxError",
+      "ZeroDivisionError"
+    ],
+    answer:1,
+    explanation:"Danh sách có 3 phần tử ứng với chỉ số index là 0, 1, 2. Việc gọi index 3 sẽ bị vượt giới hạn (IndexError)."
+  },
+  {
+    level:4, category:"Tự luận - Python", type:"essay", skill:"problemSolving", xp:30,
+    text:"Hãy trình bày cách giải hoặc viết chương trình Python nhập vào số nguyên n và kiểm tra xem n là số chẵn hay số lẻ.",
+    placeholder:"Mô tả thuật toán hoặc viết code Python (Ví dụ: dùng toán tử chia lấy dư %)..."
+  },
+  {
+    level:4, category:"Boss Challenge - Tự luận", type:"essay", skill:"problemSolving", xp:50,
+    text:"Cho một danh sách các số nguyên. Hãy viết đoạn code Python hoặc mô tả các bước thuật toán để tìm số lớn nhất trong danh sách đó. Giải thích ngắn gọn tư duy của em.",
+    placeholder:"Viết thuật toán, code Python và giải thích tư duy từng bước tại đây..."
+  }
+];
+
+// BIẾN TRẠNG THÁI
+let currentQuestionIndex = 0;
+let selectedOptionIndex = null;
+let answers = [];
+let lockedQuestions = {};
+let remainingSeconds = TOTAL_TIME;
+let timerInterval = null;
+
+let userProfile = {
+  name:"",
+  className:"",
+  totalXP:0,
+  correctAnswersCount:0,
+  skillScores:{
+    logic:{correct:0,total:0},
+    python:{correct:0,total:0},
+    debug:{correct:0,total:0},
+    algorithm:{correct:0,total:0},
+    problemSolving:{correct:0,total:0}
+  }
+};
+
+// =====================================================
+// CUSTOM ALERT & CONFIRM MODAL (NO ALERT/CONFIRM)
+// =====================================================
+function showAlert(message, title = "Thông báo") {
+  const modal = document.getElementById("customAlertModal");
+  document.getElementById("customAlertText").textContent = message;
+  document.getElementById("customAlertIcon").textContent = "💡";
+  
+  const buttons = document.getElementById("customAlertButtons");
+  buttons.innerHTML = `
+    <button onclick="closeCustomAlert()" class="px-6 py-2.5 rounded-xl bg-cyan-400 text-slate-950 font-bold text-xs uppercase tracking-wider hover:bg-cyan-300 transition">
+      Đồng ý
+    </button>
+  `;
+  modal.classList.remove("hidden");
+}
+
+function showConfirm(message, onConfirm) {
+  const modal = document.getElementById("customAlertModal");
+  document.getElementById("customAlertText").textContent = message;
+  document.getElementById("customAlertIcon").textContent = "❓";
+
+  const buttons = document.getElementById("customAlertButtons");
+  buttons.innerHTML = `
+    <button id="cancelConfirmBtn" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-semibold text-xs hover:bg-slate-700 transition">
+      Hủy bỏ
+    </button>
+    <button id="okConfirmBtn" class="px-5 py-2 rounded-xl bg-red-500 text-white font-bold text-xs uppercase tracking-wider hover:bg-red-400 transition">
+      Xác nhận
+    </button>
+  `;
+
+  document.getElementById("cancelConfirmBtn").onclick = closeCustomAlert;
+  document.getElementById("okConfirmBtn").onclick = () => {
+    closeCustomAlert();
+    onConfirm();
+  };
+
+  modal.classList.remove("hidden");
+}
+
+function closeCustomAlert() {
+  document.getElementById("customAlertModal").classList.add("hidden");
+}
+
+// =====================================================
+// CHUYỂN MÀN HÌNH
+// =====================================================
+function showScreen(id) {
+  ["heroScreen","registrationScreen","challengeScreen","resultScreen"]
+    .forEach(screen => document.getElementById(screen).classList.add("hidden"));
+
+  document.getElementById(id).classList.remove("hidden");
+}
+
+// =====================================================
+// BẮT ĐẦU CHALLENGE
+// =====================================================
+function startChallenge(event) {
+  event.preventDefault();
+
+  userProfile.name = document.getElementById("studentNameInput").value.trim();
+  userProfile.className = document.getElementById("studentClassInput").value.trim();
+
+  if (!userProfile.name || !userProfile.className) return;
+
+  document.getElementById("headerName").textContent = userProfile.name;
+  document.getElementById("headerClass").textContent = userProfile.className;
+  document.getElementById("appHeader").classList.remove("hidden");
+
+  currentQuestionIndex = 0;
+  answers = [];
+  lockedQuestions = {};
+  selectedOptionIndex = null;
+
+  showScreen("challengeScreen");
+  renderQuestion();
+  startTimer();
+}
+
+// =====================================================
+// TIMER
+// =====================================================
+function startTimer() {
+  clearInterval(timerInterval);
+
+  remainingSeconds = TOTAL_TIME;
+  updateTimerDisplay();
+
+  timerInterval = setInterval(() => {
+    remainingSeconds--;
+    updateTimerDisplay();
+
+    if (remainingSeconds <= 0) {
+      clearInterval(timerInterval);
+      showAlert("Hết giờ làm bài! Hệ thống sẽ tự động tổng hợp kết quả của bạn.");
+      finishChallenge();
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const min = Math.floor(remainingSeconds / 60);
+  const sec = remainingSeconds % 60;
+  document.getElementById("timerDisplay").textContent =
+    `${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
+}
+
+// =====================================================
+// HIỂN THỊ CÂU HỎI
+// =====================================================
+function renderQuestion() {
+  const q = questionsData[currentQuestionIndex];
+  const level = levels[q.level];
+  const total = questionsData.length;
+
+  selectedOptionIndex = answers[currentQuestionIndex]?.selected ?? null;
+
+  document.getElementById("levelDisplay").textContent = `${q.level + 1}/5`;
+  document.getElementById("levelText").textContent = `LEVEL ${q.level + 1} • ${level.subtitle}`;
+  document.getElementById("levelTitle").textContent = `${level.icon} ${level.title}`;
+  document.getElementById("questionProgress").textContent = `${currentQuestionIndex + 1}/${total}`;
+  document.getElementById("categoryTag").textContent = q.category;
+  document.getElementById("xpTag").textContent = `+${q.xp} XP`;
+  document.getElementById("questionText").textContent = q.text;
+
+  document.getElementById("progressBar").style.width =
+    `${((currentQuestionIndex) / total) * 100}%`;
+
+  const codeBox = document.getElementById("codeBox");
+  if (q.code) {
+    codeBox.textContent = q.code;
+    codeBox.classList.remove("hidden");
+  } else {
+    codeBox.classList.add("hidden");
+  }
+
+  const options = document.getElementById("optionsContainer");
+  const essayContainer = document.getElementById("essayContainer");
+  const feedbackBox = document.getElementById("feedbackBox");
+  const actionBtn = document.getElementById("actionBtn");
+
+  options.innerHTML = "";
+  feedbackBox.classList.add("hidden");
+
+  if (q.type === "mcq") {
+    essayContainer.classList.add("hidden");
+    options.classList.remove("hidden");
+
+    q.options.forEach((option, index) => {
+      const button = document.createElement("button");
+      button.className = "option-card w-full text-left p-4 rounded-xl border border-slate-700 bg-slate-900/90 text-sm md:text-base";
+
+      if (selectedOptionIndex === index) button.classList.add("selected");
+
+      button.innerHTML = `<span class="font-mono font-bold text-cyan-400 mr-2.5">${String.fromCharCode(65+index)}.</span>${escapeHtml(option)}`;
+
+      if (lockedQuestions[currentQuestionIndex]) {
+        button.disabled = true;
+        if (index === q.answer) button.classList.add("correct");
+        else if (selectedOptionIndex === index && index !== q.answer) button.classList.add("incorrect");
+      } else {
+        button.onclick = () => selectOption(index);
+      }
+
+      options.appendChild(button);
+    });
+
+  } else {
+    options.classList.add("hidden");
+    essayContainer.classList.remove("hidden");
+
+    const textarea = document.getElementById("essayAnswer");
+    textarea.placeholder = q.placeholder || "Nhập câu trả lời...";
+    textarea.value = answers[currentQuestionIndex]?.essay || "";
+    textarea.disabled = !!lockedQuestions[currentQuestionIndex];
+  }
+
+  if (lockedQuestions[currentQuestionIndex]) {
+    actionBtn.textContent =
+      currentQuestionIndex === total - 1 ? "HOÀN THÀNH 🏆" : "CÂU TIẾP →";
+
+    showFeedbackForLockedQuestion();
+  } else {
+    actionBtn.textContent = "LOCK ANSWER 🔒";
+  }
+
+  document.getElementById("prevBtn").style.visibility =
+    currentQuestionIndex === 0 ? "hidden" : "visible";
+}
+
+function selectOption(index) {
+  if (lockedQuestions[currentQuestionIndex]) return;
+
+  selectedOptionIndex = index;
+
+  answers[currentQuestionIndex] = {
+    type:"mcq",
+    selected:index
+  };
+
+  renderQuestion();
+}
+
+// =====================================================
+// KHÓA CÂU TRẢ LỜI
+// =====================================================
+function lockAnswer() {
+  if (lockedQuestions[currentQuestionIndex]) {
+    nextQuestion();
+    return;
+  }
+
+  const q = questionsData[currentQuestionIndex];
+
+  if (q.type === "mcq") {
+    if (selectedOptionIndex === null || selectedOptionIndex === undefined) {
+      showAlert("Vui lòng chọn một lựa chọn trước khi khóa câu trả lời!");
+      return;
+    }
+
+    const isCorrect = selectedOptionIndex === q.answer;
+
+    answers[currentQuestionIndex] = {
+      type:"mcq",
+      selected:selectedOptionIndex,
+      correct:isCorrect
+    };
+
+    updateSkill(q.skill, isCorrect);
+
+    if (isCorrect) {
+      userProfile.totalXP += q.xp;
+      userProfile.correctAnswersCount++;
+    }
+
+  } else {
+    const essay = document.getElementById("essayAnswer").value.trim();
+
+    if (essay.length < 5) {
+      showAlert("Hãy nhập đầy đủ câu trả lời hoặc thuật toán trước khi khóa câu hỏi.");
+      return;
+    }
+
+    answers[currentQuestionIndex] = {
+      type:"essay",
+      essay:essay
+    };
+
+    if (userProfile.skillScores[q.skill]) {
+      userProfile.skillScores[q.skill].total++;
+    }
+  }
+
+  lockedQuestions[currentQuestionIndex] = true;
+
+  updateHeader();
+  renderQuestion();
+}
+
+function updateSkill(skill, correct) {
+  if (!userProfile.skillScores[skill]) return;
+
+  userProfile.skillScores[skill].total++;
+
+  if (correct) {
+    userProfile.skillScores[skill].correct++;
+  }
+}
+
+function showFeedbackForLockedQuestion() {
+  const q = questionsData[currentQuestionIndex];
+  const feedbackBox = document.getElementById("feedbackBox");
+  const title = document.getElementById("feedbackTitle");
+  const text = document.getElementById("feedbackText");
+
+  feedbackBox.classList.remove("hidden");
+
+  if (q.type === "mcq") {
+    const correct = answers[currentQuestionIndex]?.correct;
+
+    title.textContent = correct ? "✅ Chính xác!" : "❌ Chưa chính xác";
+    title.className = `font-bold mb-1 ${correct ? "text-emerald-400" : "text-rose-400"}`;
+    text.textContent = q.explanation;
+
+  } else {
+    title.textContent = "📝 Đã ghi nhận câu trả lời tự luận";
+    title.className = "font-bold mb-1 text-cyan-400";
+    text.textContent = "Nội dung tự luận & thuật toán của em đã được lưu để Giáo viên đánh giá chi tiết.";
+  }
+}
+
+function nextQuestion() {
+  if (currentQuestionIndex < questionsData.length - 1) {
+    currentQuestionIndex++;
+    renderQuestion();
+  } else {
+    finishChallenge();
+  }
+}
+
+function previousQuestion() {
+  if (currentQuestionIndex > 0) {
+    currentQuestionIndex--;
+    renderQuestion();
+  }
+}
+
+function updateHeader() {
+  document.getElementById("xpDisplay").textContent = `${userProfile.totalXP} XP`;
+}
+
+// =====================================================
+// HOÀN THÀNH VÀ LƯU DỮ LIỆU
+// =====================================================
+async function finishChallenge() {
+  clearInterval(timerInterval);
+
+  const timeUsedSeconds = TOTAL_TIME - Math.max(remainingSeconds, 0);
+  const minutes = Math.floor(timeUsedSeconds / 60);
+  const seconds = timeUsedSeconds % 60;
+  const timeUsed = `${String(minutes).padStart(2,"0")}:${String(seconds).padStart(2,"0")}`;
+
+  const unanswered = questionsData.filter((_, index) => !lockedQuestions[index]).length;
+
+  const record = {
+    name: userProfile.name,
+    className: userProfile.className,
+    xp: userProfile.totalXP,
+    correctCount: userProfile.correctAnswersCount,
+    totalQuestions: questionsData.length,
+    timeUsed,
+    timestamp: new Date().toLocaleString("vi-VN"),
+    timestampMs: Date.now(),
+    skillScores: userProfile.skillScores,
+
+    answers: answers.map((answer, index) => ({
+      questionIndex:index,
+      question:questionsData[index].text,
+      type:questionsData[index].type,
+      category:questionsData[index].category,
+      answer:answer || null
+    })),
+
+    unanswered
+  };
+
+  // Dự phòng LocalStorage
+  const localRecords = JSON.parse(
+    localStorage.getItem("hkico_student_results") || "[]"
+  );
+  localRecords.push(record);
+  localStorage.setItem("hkico_student_results", JSON.stringify(localRecords));
+
+  // Lưu Firestore Cloud
+  if (typeof window.saveToCloudDatabase === "function") {
+    await window.saveToCloudDatabase(record);
+  }
+
+  document.getElementById("resName").textContent = userProfile.name;
+  document.getElementById("resXP").textContent = `${userProfile.totalXP} XP`;
+  document.getElementById("resCorrect").textContent =
+    `${userProfile.correctAnswersCount}/${questionsData.filter(q => q.type === "mcq").length}`;
+  document.getElementById("resTime").textContent = timeUsed;
+
+  document.getElementById("diagnosticText").textContent = createDiagnosticComment();
+  document.getElementById("progressBar").style.width = "100%";
+
+  showScreen("resultScreen");
+}
+
+function createDiagnosticComment() {
+  const mcqTotal = questionsData.filter(q => q.type === "mcq").length;
+  const percent = mcqTotal ? userProfile.correctAnswersCount / mcqTotal : 0;
+
+  if (percent >= 0.85) {
+    return "Thí sinh có nền tảng tư duy logic vững vàng và kiến thức lập trình xuất sắc! Nên tiếp tục rèn luyện thêm các dạng bài toán thuật toán nâng cao để tự tin chinh phục giải thưởng cao tại HKICO.";
+  }
+
+  if (percent >= 0.6) {
+    return "Thí sinh thể hiện khả năng suy luận khá tốt. Cần tiếp tục trau dồi cú pháp Python cơ bản, kĩ năng đọc hiểu code Debug và rèn luyện kĩ năng phân tích thuật toán tự luận.";
+  }
+
+  return "Thí sinh đã bước đầu làm quen với các khái niệm lập trình. Giai đoạn tiếp theo nên tập trung rèn luyện tư duy từng bước (Step-by-step logic), cú pháp Python nền tảng và cách giải thích ý tưởng bài toán.";
+}
+
+// =====================================================
+// TEACHER DASHBOARD LOGIC
+// =====================================================
+function openTeacherLogin() {
+  document.getElementById("teacherLoginModal").classList.remove("hidden");
+  document.getElementById("teacherPinInput").value = "";
+}
+
+function closeTeacherLogin() {
+  document.getElementById("teacherLoginModal").classList.add("hidden");
+}
+
+function verifyTeacherPin() {
+  const pin = document.getElementById("teacherPinInput").value.trim();
+
+  if (pin !== TEACHER_PIN) {
+    showAlert("Mã PIN giáo viên không chính xác. Vui lòng kiểm tra lại!");
+    return;
+  }
+
+  closeTeacherLogin();
+  window.isTeacherModalOpen = true;
+
+  document.getElementById("teacherModal").classList.remove("hidden");
+  renderTeacherTable();
+}
+
+function closeTeacherModal() {
+  window.isTeacherModalOpen = false;
+  document.getElementById("teacherModal").classList.add("hidden");
+}
+
+function getRecords() {
+  return window.cloudStudentResults && window.cloudStudentResults.length > 0
+    ? window.cloudStudentResults
+    : JSON.parse(localStorage.getItem("hkico_student_results") || "[]");
+}
+
+function renderTeacherTable() {
+  window.renderTeacherTable = renderTeacherTable;
+
+  const search = (document.getElementById("searchInput")?.value || "").toLowerCase();
+
+  const records = getRecords().filter(r =>
+    (r.name || "").toLowerCase().includes(search) ||
+    (r.className || "").toLowerCase().includes(search)
+  );
+
+  const tbody = document.getElementById("teacherTableBody");
+  const empty = document.getElementById("emptyDataMessage");
+
+  tbody.innerHTML = "";
+
+  if (!records.length) {
+    empty.classList.remove("hidden");
+    return;
+  }
+
+  empty.classList.add("hidden");
+
+  records.forEach((r, index) => {
+    const essayCount = (r.answers || []).filter(a => a.type === "essay" && a.answer?.essay).length;
+
+    const tr = document.createElement("tr");
+    tr.className = "border-b border-slate-800/80 hover:bg-slate-900/60 transition";
+
+    tr.innerHTML = `
+      <td class="p-3 font-bold text-white">${escapeHtml(r.name || "-")}</td>
+      <td class="p-3 text-cyan-400 font-semibold">${escapeHtml(r.className || "-")}</td>
+      <td class="p-3 text-center text-amber-400 font-bold">${r.xp || 0} XP</td>
+      <td class="p-3 text-center text-emerald-400 font-semibold">${r.correctCount || 0}</td>
+      <td class="p-3 text-center"><span class="px-2 py-0.5 rounded bg-purple-500/20 text-purple-300">${essayCount} câu</span></td>
+      <td class="p-3 text-center text-slate-300 font-mono">${escapeHtml(r.timeUsed || "-")}</td>
+      <td class="p-3 text-xs text-slate-400 font-sans">${escapeHtml(r.timestamp || "-")}</td>
+      <td class="p-3 text-center">
+        <button onclick="showStudentDetail(${index})"
+          class="px-3 py-1.5 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 font-sans text-xs font-semibold transition">
+          🔍 Xem bài
+        </button>
+      </td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+
+  window.filteredTeacherRecords = records;
+}
+
+function showStudentDetail(index) {
+  const r = window.filteredTeacherRecords[index];
+  if (!r) return;
+
+  const detail = document.getElementById("detailContent");
+  detail.innerHTML = `
+    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 flex justify-between items-center text-xs md:text-sm">
+      <div>
+        <span class="text-white font-bold text-base">${escapeHtml(r.name || "-")}</span>
+        <span class="text-purple-400 font-bold ml-2">(${escapeHtml(r.className || "-")})</span>
+      </div>
+      <div class="text-amber-400 font-mono font-bold">${r.xp || 0} XP</div>
+    </div>
+  `;
+
+  const essays = (r.answers || []).filter(a => a.type === "essay");
+
+  if (!essays.length) {
+    detail.innerHTML += `<p class="text-slate-400 text-xs py-4 text-center">Thí sinh chưa hoàn thành câu tự luận nào.</p>`;
+  }
+
+  essays.forEach((a, i) => {
+    const box = document.createElement("div");
+    box.className = "bg-slate-950 rounded-xl p-4 border border-slate-800 space-y-2 text-xs md:text-sm";
+
+    box.innerHTML = `
+      <div class="text-cyan-400 font-bold flex items-center justify-between">
+        <span>Câu tự luận ${i + 1} (${escapeHtml(a.category || "Tự luận")})</span>
+      </div>
+      <div class="text-slate-200 font-medium">${escapeHtml(a.question || "")}</div>
+      <div class="text-xs text-slate-400 uppercase font-mono mt-2">Bài làm của học sinh:</div>
+      <pre class="p-3.5 rounded-xl bg-slate-900 text-emerald-300 font-mono text-xs overflow-x-auto border border-slate-800">${escapeHtml(a.answer?.essay || "Chưa nhập câu trả lời")}</pre>
+    `;
+
+    detail.appendChild(box);
+  });
+
+  document.getElementById("detailModal").classList.remove("hidden");
+}
+
+function clearLocalData() {
+  showConfirm("Bạn có chắc chắn muốn xóa toàn bộ dữ liệu kết quả lưu trên máy này?", () => {
+    localStorage.removeItem("hkico_student_results");
+    renderTeacherTable();
+  });
+}
+
+function exportCSV() {
+  const records = getRecords();
+
+  if (!records.length) {
+    showAlert("Không có dữ liệu bài làm để xuất CSV!");
+    return;
+  }
+
+  let csv = "\uFEFF";
+  csv += "Họ và Tên,Lớp,XP,Số câu đúng MCQ,Thời gian làm bài,Ngày nộp,Số câu tự luận\n";
+
+  records.forEach(r => {
+    const essayCount = (r.answers || []).filter(a => a.type === "essay" && a.answer?.essay).length;
+    csv += `"${csvEscape(r.name)}","${csvEscape(r.className)}",${r.xp || 0},${r.correctCount || 0},"${csvEscape(r.timeUsed)}","${csvEscape(r.timestamp)}",${essayCount}\n`;
+  });
+
+  const blob = new Blob([csv], {type:"text/csv;charset=utf-8;"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+
+  a.href = url;
+  a.download = `HKICO_Student_Results_${Date.now()}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function csvEscape(value) {
+  return String(value || "").replaceAll('"','""');
+}
+
+function escapeHtml(value) {
+  return String(value || "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+function restartChallenge() {
+  clearInterval(timerInterval);
+
+  currentQuestionIndex = 0;
+  selectedOptionIndex = null;
+  answers = [];
+  lockedQuestions = {};
+  remainingSeconds = TOTAL_TIME;
+
+  userProfile = {
+    name:"",
+    className:"",
+    totalXP:0,
+    correctAnswersCount:0,
+    skillScores:{
+      logic:{correct:0,total:0},
+      python:{correct:0,total:0},
+      debug:{correct:0,total:0},
+      algorithm:{correct:0,total:0},
+      problemSolving:{correct:0,total:0}
+    }
+  };
+
+  document.getElementById("studentNameInput").value = "";
+  document.getElementById("studentClassInput").value = "";
+  document.getElementById("appHeader").classList.add("hidden");
+
+  showScreen("registrationScreen");
+}
+
+window.renderTeacherTable = renderTeacherTable;
+</script>
+
+<!-- FOOTER -->
+<footer class="text-center py-4 text-xs text-slate-500 border-t border-slate-900/80 relative z-10">
+  HKICO Coding Challenge 2026 • Logic • Python • Debugging • Problem Solving
+</footer>
+
+</body>
+</html>
