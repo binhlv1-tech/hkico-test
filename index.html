@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>HKICO Coding Challenge 2026</title>
 
+<!-- Tailwind CSS CDN -->
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
 tailwind.config = {
@@ -28,318 +29,342 @@ tailwind.config = {
 </script>
 
 <style>
-body { background:#060911; color:#f1f5f9; font-family:'Inter', system-ui, -apple-system, sans-serif; overflow-x:hidden; }
-.glass { background:rgba(18,24,36,.9); border:1px solid rgba(255,255,255,.08); box-shadow:0 8px 30px rgba(0,0,0,.35); backdrop-filter: blur(12px); }
-.option-card { transition: all 0.2s ease; }
-.option-card:hover { transform:translateY(-2px); border-color:#00f0ff; background: rgba(0,240,255,0.05); }
-.option-card.selected { border-color:#00f0ff; background:rgba(0,240,255,.15); box-shadow: 0 0 15px rgba(0,240,255,0.2); }
-.option-card.correct { border-color:#00ff88!important; background:rgba(0,255,136,.15)!important; box-shadow: 0 0 15px rgba(0,255,136,0.2)!important; }
-.option-card.incorrect { border-color:#ff2a6d!important; background:rgba(255,42,109,.15)!important; box-shadow: 0 0 15px rgba(255,42,109,0.2)!important; }
-textarea { min-height:160px; }
-pre { white-space:pre-wrap; }
-
-/* Custom Scrollbar */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #060911; }
-::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #00f0ff; }
+  body {
+    background-color: #060911;
+    color: #f1f5f9;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  }
+  .glass {
+    background: rgba(18, 24, 36, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    backdrop-filter: blur(8px);
+  }
+  .option-card {
+    transition: all 0.2s ease-in-out;
+  }
+  .option-card:hover {
+    transform: translateY(-2px);
+    border-color: #00f0ff;
+    box-shadow: 0 4px 20px rgba(0, 240, 255, 0.15);
+  }
+  .option-card.selected {
+    border-color: #00f0ff;
+    background-color: rgba(0, 240, 255, 0.1);
+  }
+  .option-card.correct {
+    border-color: #00ff88 !important;
+    background-color: rgba(0, 255, 136, 0.12) !important;
+  }
+  .option-card.incorrect {
+    border-color: #ff2a6d !important;
+    background-color: rgba(255, 42, 109, 0.12) !important;
+  }
+  textarea {
+    min-height: 160px;
+    resize: vertical;
+  }
+  pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
 </style>
 </head>
 
 <body class="min-h-screen flex flex-col justify-between selection:bg-cyan-500 selection:text-black">
 
-<!-- HEADER -->
-<header id="appHeader" class="hidden sticky top-0 z-40 bg-slate-950/95 backdrop-blur border-b border-slate-800 shadow-lg">
+<header id="appHeader" class="hidden sticky top-0 z-40 bg-slate-950/95 backdrop-blur border-b border-slate-800">
   <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
-    <div class="flex items-center space-x-3">
-      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-400 to-purple-600 p-0.5 flex items-center justify-center font-black text-slate-950">
-        HK
-      </div>
+    <div class="flex items-center gap-3">
+      <span class="text-2xl">⚡</span>
       <div>
-        <div class="font-black text-cyan-400 tracking-wider text-sm md:text-base">HKICO CODING CHALLENGE</div>
+        <div class="font-black text-cyan-400 tracking-wider">HKICO CODING CHALLENGE</div>
         <div class="text-xs text-slate-400">
-          <span id="headerName" class="text-slate-200 font-semibold">Thí sinh</span> •
-          <span id="headerClass" class="text-purple-400 font-semibold">Lớp</span>
+          <span id="headerName">Thí sinh</span> •
+          <span id="headerClass">Lớp</span>
         </div>
       </div>
     </div>
 
-    <div class="flex items-center gap-2 md:gap-3 text-xs md:text-sm font-mono">
-      <div class="bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-800">
-        LEVEL <span id="levelDisplay" class="text-cyan-400 font-bold">1/5</span>
+    <div class="flex flex-wrap items-center gap-3 text-sm">
+      <div class="bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-800 flex items-center gap-1.5">
+        <span class="text-slate-400 text-xs">LEVEL:</span>
+        <span id="levelDisplay" class="text-cyan-400 font-bold">1/5</span>
       </div>
-      <div class="bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-800">
-        ⚡ <span id="xpDisplay" class="text-amber-400 font-bold">0 XP</span>
+      <div class="bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-800 flex items-center gap-1.5">
+        <span class="text-yellow-400">⚡</span>
+        <span id="xpDisplay" class="text-yellow-400 font-bold">0 XP</span>
       </div>
-      <div class="bg-slate-900 px-3 py-1.5 rounded-lg border border-cyan-500/40 text-cyan-400 font-bold">
-        ⏱ <span id="timerDisplay">60:00</span>
+      <div id="timerBox" class="bg-slate-900 px-3 py-1.5 rounded-xl border border-cyan-500/40 flex items-center gap-1.5 transition-colors">
+        <span>⏱</span>
+        <span id="timerDisplay" class="text-cyan-400 font-bold">60:00</span>
       </div>
-      <button onclick="openTeacherLogin()" class="px-3 py-1.5 rounded-lg bg-purple-600/80 hover:bg-purple-500 text-white font-sans text-xs font-semibold transition-colors flex items-center gap-1">
-        <span>👨‍🏫</span> <span class="hidden sm:inline">Giáo viên</span>
+      <button onclick="openTeacherLogin()" class="px-3 py-1.5 rounded-xl bg-purple-600/80 hover:bg-purple-600 border border-purple-400/30 text-white font-medium text-xs transition">
+        👨‍🏫 Giáo viên
       </button>
     </div>
   </div>
 
-  <div class="h-1 bg-slate-900 w-full">
+  <div class="h-1 bg-slate-900 w-full overflow-hidden">
     <div id="progressBar" class="h-full bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 w-0 transition-all duration-300"></div>
   </div>
 </header>
 
-<!-- HERO -->
-<section id="heroScreen" class="min-h-[85vh] flex items-center justify-center px-4 my-auto py-8">
+<section id="heroScreen" class="min-h-screen flex items-center justify-center px-4 py-12">
   <div class="max-w-4xl text-center">
-    <div class="inline-block mb-6 px-4 py-2 rounded-full border border-cyan-500/40 text-cyan-400 text-xs md:text-sm font-semibold tracking-wide uppercase bg-cyan-950/30">
-      🔥 ĐỊNH HƯỚNG HKICO 2026
+    <div class="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-full border border-cyan-500/40 bg-cyan-950/30 text-cyan-400 text-sm font-semibold tracking-wide">
+      <span>🔥</span> HKICO CODING CHALLENGE 2026
     </div>
 
-    <h1 class="text-4xl md:text-7xl font-black mb-5 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 text-transparent bg-clip-text tracking-tight">
+    <h1 class="text-5xl md:text-7xl font-black mb-6 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-500 text-transparent bg-clip-text leading-tight">
       HKICO CODING CHALLENGE
     </h1>
 
-    <p class="text-lg md:text-2xl text-slate-300 font-medium mb-3">
+    <p class="text-xl md:text-2xl text-slate-300 mb-4 font-light">
       60 phút khám phá năng lực lập trình của bạn
     </p>
 
-    <blockquote class="text-slate-400 italic mb-10 max-w-xl mx-auto border-l-2 border-cyan-400 pl-4 text-left sm:text-center sm:border-l-0">
+    <p class="text-slate-400 italic mb-10 max-w-2xl mx-auto text-base md:text-lg">
       “Không cần biết tất cả. Hãy cho chúng tôi thấy cách bạn suy nghĩ.”
-    </blockquote>
+    </p>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
-      <div class="glass rounded-2xl p-5 border border-slate-800 hover:border-cyan-500/50 transition">
-        <div class="text-3xl mb-2">🧠</div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+      <div class="glass rounded-2xl p-6 text-left hover:border-cyan-500/50 transition">
+        <div class="text-4xl mb-3">🧠</div>
         <h3 class="font-bold text-cyan-400 text-lg">Logic</h3>
-        <p class="text-xs text-slate-400 mt-1">Tìm quy luật và phán đoán suy luận.</p>
+        <p class="text-sm text-slate-400 mt-1">Phân tích chuỗi, quy luật và suy luận logic.</p>
       </div>
-      <div class="glass rounded-2xl p-5 border border-slate-800 hover:border-purple-500/50 transition">
-        <div class="text-3xl mb-2">💻</div>
+      <div class="glass rounded-2xl p-6 text-left hover:border-purple-500/50 transition">
+        <div class="text-4xl mb-3">💻</div>
         <h3 class="font-bold text-purple-400 text-lg">Coding</h3>
-        <p class="text-xs text-slate-400 mt-1">Python cơ bản, biến và vòng lặp.</p>
+        <p class="text-sm text-slate-400 mt-1">Python cơ bản, danh sách, vòng lặp & điều kiện.</p>
       </div>
-      <div class="glass rounded-2xl p-5 border border-slate-800 hover:border-pink-500/50 transition">
-        <div class="text-3xl mb-2">🚀</div>
+      <div class="glass rounded-2xl p-6 text-left hover:border-pink-500/50 transition">
+        <div class="text-4xl mb-3">🚀</div>
         <h3 class="font-bold text-pink-400 text-lg">Problem Solving</h3>
-        <p class="text-xs text-slate-400 mt-1">Thuật toán và giải quyết bài toán tự luận.</p>
+        <p class="text-sm text-slate-400 mt-1">Xử lý tình huống, sửa lỗi và thuật toán thực tế.</p>
       </div>
     </div>
 
-    <button onclick="showScreen('registrationScreen')" class="px-8 py-4 rounded-xl bg-gradient-to-r from-cyan-400 to-purple-600 text-slate-950 font-black text-lg hover:scale-105 active:scale-95 transition-all shadow-lg shadow-cyan-500/25">
+    <button onclick="showScreen('registrationScreen')" class="px-10 py-5 rounded-2xl bg-gradient-to-r from-cyan-400 to-purple-600 text-slate-950 font-black text-xl hover:scale-105 active:scale-95 shadow-lg shadow-cyan-500/20 transition cursor-pointer">
       BẮT ĐẦU CHALLENGE 🚀
     </button>
   </div>
 </section>
 
-<!-- REGISTRATION -->
-<section id="registrationScreen" class="hidden min-h-[80vh] flex items-center justify-center px-4 my-auto py-8">
-  <div class="glass max-w-md w-full p-8 rounded-2xl border border-cyan-500/30">
-    <div class="text-center mb-6">
+<section id="registrationScreen" class="hidden min-h-screen flex items-center justify-center px-4 py-12">
+  <div class="glass max-w-md w-full p-8 rounded-3xl border border-slate-800">
+    <div class="text-center mb-8">
       <div class="text-4xl mb-2">⚡</div>
-      <h2 class="text-2xl font-black text-white">Bạn là ai?</h2>
-      <p class="text-slate-400 text-sm mt-1">Nhập thông tin cá nhân để bắt đầu thử thách.</p>
+      <h2 class="text-3xl font-black text-white">Bạn là ai?</h2>
+      <p class="text-slate-400 text-sm mt-1">Nhập thông tin cá nhân để bắt đầu Mission.</p>
     </div>
 
-    <form onsubmit="startChallenge(event)" class="space-y-4">
+    <form onsubmit="startChallenge(event)" class="space-y-5">
       <div>
-        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Họ và Tên</label>
-        <input id="studentNameInput" required placeholder="Ví dụ: Nguyễn Văn A"
-          class="w-full p-3.5 rounded-xl bg-slate-900 border border-slate-700 text-white placeholder-slate-500 focus:border-cyan-400 focus:outline-none transition">
+        <label class="block text-xs text-slate-400 mb-2 uppercase tracking-wider font-semibold">Họ và tên học sinh</label>
+        <input id="studentNameInput" required placeholder="Ví dụ: Nguyễn Văn An"
+          class="w-full px-4 py-3.5 rounded-xl bg-slate-900 border border-slate-700 focus:border-cyan-400 text-white outline-none transition">
       </div>
 
       <div>
-        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Lớp</label>
+        <label class="block text-xs text-slate-400 mb-2 uppercase tracking-wider font-semibold">Lớp học</label>
         <input id="studentClassInput" required placeholder="Ví dụ: 8A1"
-          class="w-full p-3.5 rounded-xl bg-slate-900 border border-slate-700 text-white placeholder-slate-500 focus:border-cyan-400 focus:outline-none transition">
+          class="w-full px-4 py-3.5 rounded-xl bg-slate-900 border border-slate-700 focus:border-cyan-400 text-white outline-none transition">
       </div>
 
-      <button type="submit" class="w-full mt-2 py-4 rounded-xl bg-gradient-to-r from-cyan-400 to-purple-600 text-slate-950 font-black text-base uppercase tracking-wider hover:opacity-95 active:scale-95 transition">
+      <button type="submit" class="w-full py-4 rounded-xl bg-gradient-to-r from-cyan-400 to-purple-600 text-slate-950 font-black text-lg hover:brightness-110 active:scale-98 transition shadow-lg shadow-cyan-500/20 cursor-pointer">
         START MISSION 🚀
       </button>
     </form>
   </div>
 </section>
 
-<!-- CHALLENGE QUESTION ENGINE -->
-<main id="challengeScreen" class="hidden max-w-3xl mx-auto px-4 py-8 w-full flex-grow">
-  <!-- Level Banner -->
-  <div class="glass p-5 rounded-2xl mb-5 flex justify-between items-center border border-slate-800">
+<main id="challengeScreen" class="hidden max-w-3xl mx-auto px-4 py-8 w-full">
+  <div class="glass p-5 rounded-2xl mb-6 flex justify-between items-center border border-slate-800">
     <div>
       <div id="levelText" class="text-cyan-400 text-xs font-bold uppercase tracking-wider">LEVEL 1</div>
-      <h2 id="levelTitle" class="text-lg md:text-xl font-black text-white">WARM UP</h2>
+      <h2 id="levelTitle" class="text-xl font-black text-white mt-0.5">WARM UP</h2>
     </div>
     <div class="text-right">
-      <div class="text-xs text-slate-400">Tiến độ câu</div>
-      <div id="questionProgress" class="text-purple-400 font-bold font-mono">1/10</div>
+      <div class="text-xs text-slate-400 uppercase tracking-wider">Tiến độ câu hỏi</div>
+      <div id="questionProgress" class="text-purple-400 font-bold text-lg">1/10</div>
     </div>
   </div>
 
-  <!-- Question Card -->
-  <div class="glass p-6 md:p-8 rounded-2xl border border-slate-800 relative">
-    <div class="flex justify-between items-center gap-3 mb-5">
-      <span id="categoryTag" class="px-3 py-1 rounded-full bg-slate-800 text-cyan-400 text-xs font-semibold"></span>
-      <span id="xpTag" class="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold font-mono"></span>
+  <div class="glass p-6 md:p-8 rounded-3xl border border-slate-800 shadow-xl">
+    <div class="flex justify-between items-center gap-3 mb-6">
+      <span id="categoryTag" class="px-3 py-1 rounded-full bg-slate-900 border border-slate-700 text-cyan-400 text-xs font-semibold"></span>
+      <span id="xpTag" class="px-3 py-1 rounded-full bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 text-xs font-bold"></span>
     </div>
 
-    <h3 id="questionText" class="text-base md:text-lg font-semibold leading-relaxed mb-4 text-slate-100"></h3>
+    <h3 id="questionText" class="text-lg md:text-xl font-semibold leading-relaxed text-slate-100 mb-5"></h3>
 
-    <!-- Code Block -->
-    <pre id="codeBox" class="hidden p-4 rounded-xl bg-slate-950 border-l-4 border-cyan-400 text-cyan-300 font-mono text-xs md:text-sm mb-5 overflow-x-auto"></pre>
+    <pre id="codeBox" class="hidden p-4 rounded-xl bg-slate-950 border-l-4 border-cyan-400 text-cyan-300 font-mono text-sm mb-6 overflow-x-auto shadow-inner"></pre>
 
-    <!-- Options Container (MCQ) -->
-    <div id="optionsContainer" class="space-y-3 mb-5"></div>
+    <!-- MCQ Container -->
+    <div id="optionsContainer" class="space-y-3 mb-6"></div>
 
     <!-- Essay Container -->
-    <div id="essayContainer" class="hidden mb-5">
-      <textarea id="essayAnswer" placeholder="Viết câu trả lời, cách giải hoặc code Python của em tại đây..."
-        class="w-full p-4 rounded-xl bg-slate-950 border border-slate-700 focus:border-cyan-400 outline-none text-slate-200 text-sm font-mono"></textarea>
-      <p class="text-xs text-slate-400 mt-2 flex items-center gap-1">
-        <span>💡</span> Phần tự luận được lưu toàn bộ để giáo viên đánh giá tư duy & thuật toán của em.
+    <div id="essayContainer" class="hidden space-y-3 mb-6">
+      <textarea id="essayAnswer" placeholder="Nhập bài làm hoặc đoạn mã Python của em tại đây..."
+        class="w-full p-4 rounded-xl bg-slate-950 border border-slate-700 focus:border-cyan-400 text-slate-200 outline-none text-sm font-mono leading-relaxed transition"></textarea>
+      <p class="text-xs text-slate-400 italic">
+        💡 Phần bài làm tự luận sẽ được lưu trực tiếp để giáo viên đánh giá tư duy thuật toán và lập trình.
       </p>
     </div>
 
     <!-- Feedback Box -->
-    <div id="feedbackBox" class="hidden p-4 rounded-xl bg-slate-950 border border-slate-800 text-sm mb-5">
-      <div id="feedbackTitle" class="font-bold mb-1"></div>
-      <div id="feedbackText" class="text-xs md:text-sm text-slate-300"></div>
+    <div id="feedbackBox" class="hidden mt-6 p-4 rounded-2xl bg-slate-900/90 border border-slate-700 transition">
+      <div id="feedbackTitle" class="font-bold text-base mb-1"></div>
+      <div id="feedbackText" class="text-sm text-slate-300 leading-relaxed"></div>
     </div>
 
-    <!-- Action Buttons -->
-    <div class="flex justify-between items-center pt-2">
-      <button id="prevBtn" onclick="previousQuestion()" class="px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold uppercase transition">
+    <!-- Navigation Actions -->
+    <div class="flex justify-between items-center gap-4 mt-8 pt-4 border-t border-slate-800/80">
+      <button id="prevBtn" onclick="previousQuestion()" class="px-5 py-3 rounded-xl bg-slate-900 border border-slate-700 text-slate-300 font-medium hover:bg-slate-800 hover:text-white transition cursor-pointer">
         ← QUAY LẠI
       </button>
 
-      <button id="actionBtn" onclick="lockAnswer()" class="px-6 py-3 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-black text-xs uppercase tracking-wider transition shadow-lg shadow-cyan-400/20">
+      <button id="actionBtn" onclick="lockAnswer()" class="px-7 py-3 rounded-xl bg-gradient-to-r from-cyan-400 to-purple-600 text-slate-950 font-black text-base hover:brightness-110 active:scale-95 transition shadow-lg shadow-cyan-500/20 cursor-pointer">
         LOCK ANSWER 🔒
       </button>
     </div>
   </div>
 </main>
 
-<!-- RESULT -->
-<section id="resultScreen" class="hidden max-w-3xl mx-auto px-4 py-10 w-full my-auto">
-  <div class="glass rounded-2xl p-6 md:p-8 text-center border border-cyan-500/30">
-    <div class="text-6xl mb-3 animate-bounce">🏆</div>
-    <h2 class="text-3xl md:text-4xl font-black mb-1 text-white">MISSION COMPLETE!</h2>
-    <p class="text-slate-400 text-sm mb-8">Bạn đã hoàn thành HKICO Coding Challenge</p>
+<section id="resultScreen" class="hidden max-w-3xl mx-auto px-4 py-12 w-full">
+  <div class="glass rounded-3xl p-8 md:p-10 text-center border border-slate-800 shadow-2xl">
+    <div class="text-6xl mb-4 animate-bounce">🏆</div>
+    <h2 class="text-4xl font-black mb-2 text-white">MISSION COMPLETE!</h2>
+    <p class="text-slate-400 mb-8 text-base">Bạn đã hoàn thành xuất sắc HKICO Coding Challenge 2026</p>
 
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-      <div class="bg-slate-950/80 p-4 rounded-xl border border-slate-800">
-        <div class="text-slate-400 text-xs uppercase font-mono">THÍ SINH</div>
-        <div id="resName" class="font-bold text-white text-sm md:text-base mt-1 truncate"></div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div class="bg-slate-950/80 p-4 rounded-2xl border border-slate-800">
+        <div class="text-slate-400 text-xs font-semibold mb-1 uppercase">Thí sinh</div>
+        <div id="resName" class="font-bold text-white truncate"></div>
       </div>
-      <div class="bg-slate-950/80 p-4 rounded-xl border border-slate-800">
-        <div class="text-slate-400 text-xs uppercase font-mono">KẾT QUẢ XP</div>
-        <div id="resXP" class="font-bold text-amber-400 text-sm md:text-base mt-1"></div>
+      <div class="bg-slate-950/80 p-4 rounded-2xl border border-slate-800">
+        <div class="text-slate-400 text-xs font-semibold mb-1 uppercase">Tổng XP</div>
+        <div id="resXP" class="font-bold text-yellow-400 text-xl"></div>
       </div>
-      <div class="bg-slate-950/80 p-4 rounded-xl border border-slate-800">
-        <div class="text-slate-400 text-xs uppercase font-mono">TRẮC NGHIỆM</div>
-        <div id="resCorrect" class="font-bold text-emerald-400 text-sm md:text-base mt-1"></div>
+      <div class="bg-slate-950/80 p-4 rounded-2xl border border-slate-800">
+        <div class="text-slate-400 text-xs font-semibold mb-1 uppercase">Trắc nghiệm đúng</div>
+        <div id="resCorrect" class="font-bold text-emerald-400 text-xl"></div>
       </div>
-      <div class="bg-slate-950/80 p-4 rounded-xl border border-slate-800">
-        <div class="text-slate-400 text-xs uppercase font-mono">THỜI GIAN</div>
-        <div id="resTime" class="font-bold text-cyan-400 text-sm md:text-base mt-1 font-mono"></div>
+      <div class="bg-slate-950/80 p-4 rounded-2xl border border-slate-800">
+        <div class="text-slate-400 text-xs font-semibold mb-1 uppercase">Thời gian làm bài</div>
+        <div id="resTime" class="font-bold text-cyan-400 text-xl"></div>
       </div>
     </div>
 
-    <div class="bg-cyan-950/20 border border-cyan-500/30 rounded-xl p-5 text-left mb-6">
-      <h3 class="text-cyan-400 font-bold mb-2 flex items-center gap-2 text-sm">
-        <span>💬</span> Nhận xét định hướng từ Chuyên gia:
+    <div class="bg-cyan-950/30 border border-cyan-500/30 rounded-2xl p-6 text-left mb-8">
+      <h3 class="text-cyan-400 font-bold mb-2 flex items-center gap-2">
+        <span>💬</span> Nhận xét đánh giá định hướng
       </h3>
-      <p id="diagnosticText" class="text-slate-300 text-xs md:text-sm leading-relaxed"></p>
+      <p id="diagnosticText" class="text-slate-300 leading-relaxed text-sm md:text-base"></p>
     </div>
 
-    <div class="flex flex-col md:flex-row justify-center gap-3">
-      <button onclick="restartChallenge()" class="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs uppercase tracking-wider transition">
-        🔄 Làm lại
+    <div class="flex flex-col md:flex-row justify-center gap-4">
+      <button onclick="restartChallenge()" class="px-6 py-3.5 rounded-xl bg-slate-900 border border-slate-700 text-slate-200 font-semibold hover:bg-slate-800 transition cursor-pointer">
+        🔄 Làm lại thử thách
       </button>
-      <button onclick="openTeacherLogin()" class="px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs uppercase tracking-wider transition shadow-lg shadow-purple-600/30">
+      <button onclick="openTeacherLogin()" class="px-6 py-3.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold transition shadow-lg shadow-purple-600/30 cursor-pointer">
         👨‍🏫 Teacher Dashboard
       </button>
     </div>
   </div>
 </section>
 
-<!-- TEACHER PIN MODAL -->
-<div id="teacherLoginModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-  <div class="glass max-w-md w-full rounded-2xl p-6 border border-purple-500/30">
-    <h2 class="text-xl font-black mb-1 text-white">👨‍🏫 Teacher Mode</h2>
-    <p class="text-xs text-slate-400 mb-4">Vui lòng nhập mã PIN bảo mật giáo viên để truy cập.</p>
+<div id="customAlertModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+  <div class="glass max-w-sm w-full rounded-2xl p-6 border border-slate-700 text-center">
+    <div id="customAlertIcon" class="text-4xl mb-3">⚠️</div>
+    <h3 id="customAlertTitle" class="text-lg font-bold text-white mb-2">Thông báo</h3>
+    <p id="customAlertMessage" class="text-sm text-slate-300 mb-6 leading-relaxed"></p>
+    <button onclick="closeCustomAlert()" class="w-full py-3 bg-cyan-400 text-slate-950 font-bold rounded-xl hover:brightness-110 transition cursor-pointer">
+      Xác nhận
+    </button>
+  </div>
+</div>
 
-    <input id="teacherPinInput" type="password" placeholder="Mã PIN (Mặc định: HKICO2026)"
-      class="w-full p-3.5 rounded-xl bg-slate-900 border border-slate-700 text-white placeholder-slate-500 focus:border-purple-400 outline-none text-sm font-mono mb-4">
+<div id="teacherLoginModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+  <div class="glass max-w-md w-full rounded-3xl p-6 border border-slate-800 shadow-2xl">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-xl font-black text-white flex items-center gap-2">
+        <span>👨‍🏫</span> Teacher Mode
+      </h2>
+      <button onclick="closeTeacherLogin()" class="text-slate-400 hover:text-white text-xl cursor-pointer">✕</button>
+    </div>
+    <p class="text-xs text-slate-400 mb-4">Nhập mã PIN dành riêng cho giáo viên để truy cập kết quả.</p>
+
+    <input id="teacherPinInput" type="password" placeholder="Nhập mã PIN giáo viên"
+      class="w-full p-3.5 rounded-xl bg-slate-900 border border-slate-700 text-white outline-none focus:border-purple-400 mb-4">
 
     <div class="flex justify-end gap-3">
-      <button onclick="closeTeacherLogin()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold">Đóng</button>
-      <button onclick="verifyTeacherPin()" class="px-5 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-xl font-bold text-xs">Xác nhận</button>
+      <button onclick="closeTeacherLogin()" class="px-4 py-2.5 bg-slate-800 text-slate-300 rounded-xl text-sm hover:bg-slate-700 cursor-pointer">Đóng</button>
+      <button onclick="verifyTeacherPin()" class="px-5 py-2.5 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-sm font-bold transition cursor-pointer">Xác nhận</button>
     </div>
   </div>
 </div>
 
-<!-- TEACHER DASHBOARD MODAL -->
-<div id="teacherModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm p-4 overflow-y-auto">
-  <div class="glass max-w-6xl mx-auto rounded-2xl overflow-hidden my-6 border border-purple-500/30 shadow-2xl">
-    <div class="p-5 flex justify-between items-center border-b border-slate-800 bg-slate-950/80">
+<div id="teacherModal" class="hidden fixed inset-0 z-50 bg-black/90 p-4 overflow-y-auto">
+  <div class="glass max-w-6xl mx-auto rounded-3xl overflow-hidden my-6 border border-slate-800">
+    <div class="p-6 flex justify-between items-center border-b border-slate-800 bg-slate-950/50">
       <div>
-        <h2 class="text-lg md:text-xl font-black text-white">👨‍🏫 TEACHER DASHBOARD</h2>
-        <p class="text-xs text-slate-400">Dữ liệu kết quả làm bài của học sinh (Realtime Firestore / LocalStorage)</p>
+        <h2 class="text-2xl font-black text-white flex items-center gap-2">
+          <span>👨‍🏫</span> TEACHER DASHBOARD
+        </h2>
+        <p class="text-xs text-slate-400 mt-1">Dữ liệu làm bài của học sinh được tự động lưu trữ</p>
       </div>
-      <button onclick="closeTeacherModal()" class="text-slate-400 hover:text-white p-2 text-xl font-bold">✕</button>
+      <button onclick="closeTeacherModal()" class="text-slate-400 hover:text-white text-2xl cursor-pointer">✕</button>
     </div>
 
-    <div class="p-5 flex flex-wrap gap-3 justify-between items-center bg-slate-900/40">
-      <input id="searchInput" oninput="renderTeacherTable()" placeholder="🔍 Tìm theo tên hoặc lớp..."
-        class="p-2.5 px-4 rounded-xl bg-slate-900 border border-slate-700 text-white placeholder-slate-500 text-xs w-full sm:w-64 focus:border-cyan-400 outline-none">
-      <div class="flex gap-2">
-        <button onclick="exportCSV()" class="px-4 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-xl font-black text-xs uppercase tracking-wider transition">📥 Xuất CSV</button>
-        <button onclick="clearLocalData()" class="px-4 py-2.5 bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/30 rounded-xl text-xs font-semibold">Xóa Local</button>
+    <div class="p-6 flex flex-wrap gap-4 justify-between items-center border-b border-slate-800/60">
+      <input id="searchInput" oninput="renderTeacherTable()" placeholder="🔍 Tìm kiếm tên học sinh hoặc lớp..."
+        class="px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-white text-sm outline-none focus:border-cyan-400 w-full md:w-80">
+      <div class="flex gap-3">
+        <button onclick="exportCSV()" class="px-4 py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-xl text-sm font-bold transition flex items-center gap-2 cursor-pointer">
+          <span>📥</span> Xuất CSV
+        </button>
+        <button onclick="clearLocalData()" class="px-4 py-3 bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/30 rounded-xl text-sm font-medium transition cursor-pointer">
+          🗑 Xóa Local
+        </button>
       </div>
     </div>
 
-    <div class="overflow-x-auto p-5 pt-0">
-      <table class="w-full text-left text-xs md:text-sm">
-        <thead class="bg-slate-900/90 text-cyan-400 uppercase font-mono border-b border-slate-800">
+    <div class="overflow-x-auto p-6">
+      <table class="w-full text-sm text-left">
+        <thead class="bg-slate-950 text-cyan-400 uppercase text-xs tracking-wider">
           <tr>
-            <th class="p-3">Họ và tên</th>
-            <th class="p-3">Lớp</th>
-            <th class="p-3 text-center">XP</th>
-            <th class="p-3 text-center">Trắc nghiệm</th>
-            <th class="p-3 text-center">Tự luận</th>
-            <th class="p-3 text-center">Thời gian</th>
-            <th class="p-3">Ngày nộp</th>
-            <th class="p-3 text-center">Thao tác</th>
+            <th class="p-3.5 rounded-l-xl">Học sinh</th>
+            <th class="p-3.5">Lớp</th>
+            <th class="p-3.5 text-center">XP</th>
+            <th class="p-3.5 text-center">TN Đúng</th>
+            <th class="p-3.5 text-center">Tự luận</th>
+            <th class="p-3.5 text-center">Thời gian</th>
+            <th class="p-3.5">Thời điểm nộp</th>
+            <th class="p-3.5 text-center rounded-r-xl">Chi tiết</th>
           </tr>
         </thead>
-        <tbody id="teacherTableBody" class="divide-y divide-slate-800/60 font-mono text-slate-300"></tbody>
+        <tbody id="teacherTableBody" class="divide-y divide-slate-800/60"></tbody>
       </table>
-      <div id="emptyDataMessage" class="hidden text-center text-slate-500 py-10 text-xs">Chưa có dữ liệu bài làm nào.</div>
+      <div id="emptyDataMessage" class="hidden text-center text-slate-500 py-12">Chưa có dữ liệu học sinh làm bài.</div>
     </div>
   </div>
 </div>
 
-<!-- ESSAY DETAIL MODAL -->
-<div id="detailModal" class="hidden fixed inset-0 z-[60] bg-black/80 backdrop-blur-sm p-4 overflow-y-auto flex items-center justify-center">
-  <div class="glass max-w-3xl w-full mx-auto rounded-2xl p-6 my-6 border border-cyan-500/30 max-h-[85vh] overflow-y-auto">
-    <div class="flex justify-between items-center mb-5 border-b border-slate-800 pb-3">
-      <h2 class="text-lg font-black text-white">📝 Chi tiết bài làm tự luận</h2>
-      <button onclick="document.getElementById('detailModal').classList.add('hidden')" class="text-slate-400 hover:text-white text-xl font-bold">✕</button>
+<div id="detailModal" class="hidden fixed inset-0 z-[60] bg-black/90 p-4 overflow-y-auto">
+  <div class="glass max-w-3xl mx-auto rounded-3xl p-6 md:p-8 my-6 border border-slate-800">
+    <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-800">
+      <h2 class="text-xl font-black text-white flex items-center gap-2">
+        <span>📝</span> Chi tiết bài làm tự luận
+      </h2>
+      <button onclick="document.getElementById('detailModal').classList.add('hidden')" class="text-slate-400 hover:text-white text-xl cursor-pointer">✕</button>
     </div>
-    <div id="detailContent" class="space-y-4"></div>
+    <div id="detailContent" class="space-y-6"></div>
   </div>
 </div>
 
-<!-- CUSTOM ALERT / DIALOG MODAL -->
-<div id="customAlertModal" class="hidden fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-  <div class="glass max-w-sm w-full rounded-2xl p-6 border border-cyan-500/40 text-center space-y-4">
-    <div id="customAlertIcon" class="text-4xl">⚠️</div>
-    <p id="customAlertText" class="text-sm text-slate-200 leading-relaxed font-medium"></p>
-    <div id="customAlertButtons" class="flex justify-center gap-3 pt-2">
-      <button id="customAlertOkBtn" class="px-6 py-2 rounded-xl bg-cyan-400 text-slate-950 font-bold text-xs uppercase tracking-wider">
-        Đồng ý
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- FIREBASE MODULE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -351,8 +376,7 @@ const firebaseConfig = {
   projectId: "hkico-afded",
   storageBucket: "hkico-afded.firebasestorage.app",
   messagingSenderId: "923197101471",
-  appId: "1:923197101471:web:9adeed81635ab10c2f99aa",
-  measurementId: "G-9RV6PDMJL4"
+  appId: "1:923197101471:web:9adeed81635ab10c2f99aa"
 };
 
 let db = null;
@@ -371,13 +395,14 @@ try {
       window.isCloudReady = true;
       setupRealtimeListener();
     })
-    .catch((error) => console.warn("Lỗi Auth Firebase:", error));
+    .catch((error) => console.error("Firebase auth info:", error));
 
 } catch (error) {
-  console.warn("Chạy ở chế độ offline LocalStorage:", error);
+  console.error("Firebase startup info:", error);
 }
 
 function setupRealtimeListener() {
+  if (!db) return;
   onSnapshot(
     collection(db, "student_results"),
     (snapshot) => {
@@ -386,11 +411,11 @@ function setupRealtimeListener() {
       records.sort((a,b) => (b.timestampMs || 0) - (a.timestampMs || 0));
       window.cloudStudentResults = records;
 
-      if (window.isTeacherModalOpen && typeof window.renderTeacherTable === "function") {
+      if (window.isTeacherModalOpen && typeof window.renderTeacherTable === 'function') {
         window.renderTeacherTable();
       }
     },
-    (error) => console.warn("Lỗi đồng bộ Firestore:", error)
+    (error) => console.error("Firestore read info:", error)
   );
 }
 
@@ -405,112 +430,89 @@ window.saveToCloudDatabase = async function(record) {
     });
     return true;
   } catch (error) {
-    console.error("Lỗi gửi dữ liệu lên Cloud:", error);
+    console.error("Firestore save info:", error);
     return false;
   }
 };
 </script>
 
-<!-- MAIN APP LOGIC -->
 <script>
 // =====================================================
-// CẤU HÌNH HỆ THỐNG
+// CẤU HÌNH HỆ THỐNG CÂU HỎI & LEVEL
 // =====================================================
 const TEACHER_PIN = "HKICO2026";
 const TOTAL_TIME = 60 * 60; // 60 Phút
 
 const levels = [
-  { title:"WARM UP", subtitle:"Khởi động", icon:"🚀" },
-  { title:"LOGIC LAB", subtitle:"Tư duy logic", icon:"🧠" },
-  { title:"PYTHON CORE", subtitle:"Kiến thức Python", icon:"💻" },
-  { title:"DEBUG ZONE", subtitle:"Tìm và sửa lỗi", icon:"🐛" },
-  { title:"BOSS CHALLENGE", subtitle:"Tự luận thuật toán", icon:"🏆" }
+  { title:"CƠ BẢN & LẬP TRÌNH", subtitle:"Biến, Phép toán & Cắt chuỗi", icon:"🚀" },
+  { title:"CẤU TRÚC ĐIỀU KIỆN & VÒNG LẬP", subtitle:"Câu lệnh if/else & Vòng lặp for", icon:"🧠" },
+  { title:"TỰ LUẬN THUẬT TOÁN CƠ BẢN", subtitle:"Xử lý Số chẵn & Chuỗi ký tự", icon:"✏️" },
+  { title:"TỰ LUẬN DEBUG & LOGIC", subtitle:"Sửa lỗi chỉ số & So sánh 3 số", icon:"🐛" },
+  { title:"TỰ LUẬN VẬN DỤNG THỰC TẾ", subtitle:"Bài toán FizzBuzz & Đếm ước số", icon:"🏆" }
 ];
 
-// DỮ LIỆU CÂU HỎI (TRẮC NGHIỆM + TỰ LUẬN)
+// DỮ LIỆU CÂU HỎI THCS (4 Trắc nghiệm, 6 Tự luận - Chuẩn kiến thức HKICO)
 const questionsData = [
   {
-    level:0, category:"Logic", type:"mcq", skill:"logic", xp:10,
-    text:"Dãy số nào tiếp theo: 2, 4, 8, 16, ?",
-    options:["20","24","32","64"], answer:2,
-    explanation:"Mỗi số bằng số trước đó nhân với 2 (2^n)."
+    level: 0, category: "Biến & Phép toán", type: "mcq", skill: "logic", xp: 15,
+    text: "Cho đoạn code Python hoán đổi giá trị hai biến a và b dưới đây. Sau khi chạy, giá trị của a và b lần lượt là bao nhiêu?",
+    code: "a = 5\nb = 10\na = a + b\nb = a - b\na = a - b\nprint('a =', a, 'b =', b)",
+    options: ["a = 10 b = 5", "a = 5 b = 10", "a = 15 b = 10", "a = 15 b = 5"], answer: 0,
+    explanation: "Thực thi từng bước: Dòng 3: a = 15. Dòng 4: b = 15 - 10 = 5. Dòng 5: a = 15 - 5 = 10. Kết quả: a = 10, b = 5."
   },
   {
-    level:0, category:"Python Basics", type:"mcq", skill:"python", xp:10,
-    text:"Lệnh nào dùng để hiển thị dữ liệu ra màn hình trong Python?",
-    options:["input()","print()","show()","display()"], answer:1,
-    explanation:"Hàm print() dùng để xuất kết quả ra màn hình console."
+    level: 0, category: "Xử lý Chuỗi Python", type: "mcq", skill: "python", xp: 15,
+    text: "Cho chuỗi s = 'PYTHON2026'. Kết quả trả về của phép cắt chuỗi s[2:6] trong Python là gì?",
+    code: "s = 'PYTHON2026'\nprint(s[2:6])",
+    options: ["'THON'", "'YTHO'", "'THON2'", "'PYTH'"], answer: 0,
+    explanation: "Cắt chuỗi s[2:6] lấy các ký tự từ vị trí index 2 đến 5: s[2]='T', s[3]='H', s[4]='O', s[5]='N' -> Kết quả 'THON'."
   },
   {
-    level:1, category:"Logic", type:"mcq", skill:"logic", xp:15,
-    text:"Một vòng lặp thực hiện 5 lần, mỗi lần giá trị x tăng thêm 2. Giá trị ban đầu của x là 0. Kết quả của x là?",
-    options:["5","7","10","12"], answer:2,
-    explanation:"Ban đầu x = 0, sau 5 lần cộng 2: x = 0 + (2 × 5) = 10."
+    level: 1, category: "Vòng lặp & Điều kiện", type: "mcq", skill: "python", xp: 20,
+    text: "Giá trị của biến total in ra màn hình sau khi thực thi đoạn mã dưới đây là bao nhiêu?",
+    code: "total = 0\nfor i in range(1, 6):\n    if i % 2 == 0:\n        total += i * 2\n    else:\n        total += i\nprint(total)",
+    options: ["15", "21", "18", "25"], answer: 1,
+    explanation: "Các bước lặp i từ 1 đến 5: i=1 (lẻ) -> total=1; i=2 (chẵn) -> total=1+4=5; i=3 (lẻ) -> total=5+3=8; i=4 (chẵn) -> total=8+8=16; i=5 (lẻ) -> total=16+5=21."
   },
   {
-    level:1, category:"Algorithm", type:"mcq", skill:"algorithm", xp:15,
-    text:"Để tìm phần tử có giá trị lớn nhất trong danh sách chưa sắp xếp, chiến lược đúng nhất là?",
-    options:[
-      "Chỉ kiểm tra phần tử đầu tiên",
-      "Duyệt qua lần lượt các phần tử và lưu lại giá trị lớn nhất",
-      "Xóa các phần tử nhỏ hơn 0",
-      "In danh sách ra màn hình"
-    ],
-    answer:1,
-    explanation:"Thuật toán tìm Max cần duyệt danh sách và so sánh từng phần tử với biến max_val."
+    level: 1, category: "Thao tác Danh sách (List)", type: "mcq", skill: "python", xp: 20,
+    text: "Kết quả in ra của danh sách numbers sau khi thực hiện các phép biến đổi dưới đây là gì?",
+    code: "numbers = [3, 1, 4, 1, 5]\nnumbers.append(9)\nnumbers.pop(1)\nprint(numbers)",
+    options: ["[3, 4, 1, 5, 9]", "[1, 3, 4, 5, 9]", "[3, 1, 4, 1, 9]", "[3, 1, 4, 5]"], answer: 0,
+    explanation: "Ban đầu: [3, 1, 4, 1, 5]. append(9) -> [3, 1, 4, 1, 5, 9]. pop(1) xóa phần tử index 1 (số 1) -> [3, 4, 1, 5, 9]."
   },
   {
-    level:2, category:"Python", type:"mcq", skill:"python", xp:20,
-    text:"Đoạn code sau in ra kết quả gì?",
-    code:"x = 5\nx = x + 3\nprint(x)",
-    options:["5","8","53","Lỗi cú pháp"], answer:1,
-    explanation:"Phép gán x = x + 3 lấy giá trị x hiện tại (5) cộng 3 thành 8."
+    level: 2, category: "Tự luận - Vòng lặp & Tính tổng", type: "essay", skill: "problemSolving", xp: 30,
+    text: "Viết đoạn mã Python tính tổng tất cả các số chẵn trong khoảng từ 1 đến N (với N là số nguyên dương nhập từ bàn phím). Trình bày hướng giải và mã Python của em.",
+    placeholder: "Nhập bài làm hoặc đoạn mã Python của em tại đây..."
   },
   {
-    level:2, category:"Python", type:"mcq", skill:"python", xp:20,
-    text:"Giá trị của len([10, 20, 30, 40]) trong Python là bao nhiêu?",
-    options:["3","4","10","40"], answer:1,
-    explanation:"Hàm len() trả về số lượng phần tử trong danh sách (ở đây có 4 phần tử)."
+    level: 2, category: "Tự luận - Xử lý Chuỗi", type: "essay", skill: "problemSolving", xp: 30,
+    text: "Viết chương trình Python đếm số lượng chữ cái in hoa (từ 'A' đến 'Z') xuất hiện trong một chuỗi ký tự s nhập từ bàn phím.",
+    placeholder: "Nhập bài làm hoặc đoạn mã Python của em tại đây..."
   },
   {
-    level:3, category:"Debug", type:"mcq", skill:"debug", xp:25,
-    text:"Đoạn code Python sau bị mắc lỗi gì?",
-    code:"for i in range(5)\n    print(i)",
-    options:[
-      "Thiếu dấu hai chấm (:) ở cuối dòng câu lệnh for",
-      "Thiếu dấu ngoặc đơn ở print",
-      "Cú pháp câu lệnh print sai",
-      "Không thể chạy vòng lặp với range"
-    ],
-    answer:0,
-    explanation:"Trong Python, các câu lệnh khối như for, if, while bắt buộc phải có dấu hai chấm (:) cuối dòng header."
+    level: 3, category: "Tự luận - Sửa lỗi Code (Debug)", type: "essay", skill: "debug", xp: 35,
+    text: "Cho đoạn mã Python tính tổng các số từ 1 đến N dưới đây:\n\ndef tong_tu_1_den_n(n):\n    s = 0\n    for i in range(1, n):\n        s += i\n    return s\n\nKhi chạy hàm với n = 5, kết quả in ra là 10 (thay vì 15). Em hãy chỉ ra lý do vì sao chương trình bị sai và viết lại đoạn mã đúng.",
+    placeholder: "Nhập phần giải thích lỗi sai và đoạn code Python đúng của em tại đây..."
   },
   {
-    level:3, category:"Debug", type:"mcq", skill:"debug", xp:25,
-    text:"Đoạn code sau sẽ sinh ra loại lỗi nào khi thực thi?",
-    code:"numbers = [1, 2, 3]\nprint(numbers[3])",
-    options:[
-      "Không có lỗi nào",
-      "IndexError: list index out of range",
-      "SyntaxError",
-      "ZeroDivisionError"
-    ],
-    answer:1,
-    explanation:"Danh sách có 3 phần tử ứng với chỉ số index là 0, 1, 2. Việc gọi index 3 sẽ bị vượt giới hạn (IndexError)."
+    level: 3, category: "Tự luận - Câu lệnh Điều kiện", type: "essay", skill: "logic", xp: 35,
+    text: "Viết chương trình Python nhập vào 3 số nguyên a, b, c từ bàn phím. Tìm và in ra số lớn nhất trong 3 số đó mà KHÔNG dùng hàm max() có sẵn.",
+    placeholder: "Nhập bài làm hoặc đoạn mã Python của em tại đây..."
   },
   {
-    level:4, category:"Tự luận - Python", type:"essay", skill:"problemSolving", xp:30,
-    text:"Hãy trình bày cách giải hoặc viết chương trình Python nhập vào số nguyên n và kiểm tra xem n là số chẵn hay số lẻ.",
-    placeholder:"Mô tả thuật toán hoặc viết code Python (Ví dụ: dùng toán tử chia lấy dư %)..."
+    level: 4, category: "Tự luận - Cấu trúc Lập trình", type: "essay", skill: "problemSolving", xp: 40,
+    text: "Viết chương trình Python in ra các số từ 1 đến N theo quy tắc:\n- Nếu số chia hết cho 3: in 'Fizz'\n- Nếu số chia hết cho 5: in 'Buzz'\n- Nếu chia hết cho cả 3 và 5: in 'FizzBuzz'\n- Các trường hợp khác: in ra chính số đó.",
+    placeholder: "Nhập bài làm hoặc đoạn mã Python của em tại đây..."
   },
   {
-    level:4, category:"Boss Challenge - Tự luận", type:"essay", skill:"problemSolving", xp:50,
-    text:"Cho một danh sách các số nguyên. Hãy viết đoạn code Python hoặc mô tả các bước thuật toán để tìm số lớn nhất trong danh sách đó. Giải thích ngắn gọn tư duy của em.",
-    placeholder:"Viết thuật toán, code Python và giải thích tư duy từng bước tại đây..."
+    level: 4, category: "Tự luận - Bài toán Số học", type: "essay", skill: "problemSolving", xp: 50,
+    text: "Viết đoạn mã Python nhập vào một số nguyên dương N và đếm xem số N có tất cả bao nhiêu ước số nguyên dương. (Ví dụ: Số 6 có 4 ước là 1, 2, 3, 6).",
+    placeholder: "Nhập bài làm hoặc đoạn mã Python của em tại đây..."
   }
 ];
 
-// BIẾN TRẠNG THÁI
 let currentQuestionIndex = 0;
 let selectedOptionIndex = null;
 let answers = [];
@@ -519,58 +521,33 @@ let remainingSeconds = TOTAL_TIME;
 let timerInterval = null;
 
 let userProfile = {
-  name:"",
-  className:"",
-  totalXP:0,
-  correctAnswersCount:0,
-  skillScores:{
-    logic:{correct:0,total:0},
-    python:{correct:0,total:0},
-    debug:{correct:0,total:0},
-    algorithm:{correct:0,total:0},
-    problemSolving:{correct:0,total:0}
+  name: "",
+  className: "",
+  totalXP: 0,
+  correctAnswersCount: 0,
+  skillScores: {
+    logic: { correct: 0, total: 0 },
+    python: { correct: 0, total: 0 },
+    debug: { correct: 0, total: 0 },
+    problemSolving: { correct: 0, total: 0 }
   }
 };
 
 // =====================================================
-// CUSTOM ALERT & CONFIRM MODAL (NO ALERT/CONFIRM)
+// HIỂN THỊ MÀN HÌNH & THÔNG BÁO TÙY CHỈNH
 // =====================================================
-function showAlert(message, title = "Thông báo") {
-  const modal = document.getElementById("customAlertModal");
-  document.getElementById("customAlertText").textContent = message;
-  document.getElementById("customAlertIcon").textContent = "💡";
-  
-  const buttons = document.getElementById("customAlertButtons");
-  buttons.innerHTML = `
-    <button onclick="closeCustomAlert()" class="px-6 py-2.5 rounded-xl bg-cyan-400 text-slate-950 font-bold text-xs uppercase tracking-wider hover:bg-cyan-300 transition">
-      Đồng ý
-    </button>
-  `;
-  modal.classList.remove("hidden");
+function showScreen(id) {
+  ["heroScreen", "registrationScreen", "challengeScreen", "resultScreen"]
+    .forEach(screen => document.getElementById(screen).classList.add("hidden"));
+
+  document.getElementById(id).classList.remove("hidden");
 }
 
-function showConfirm(message, onConfirm) {
-  const modal = document.getElementById("customAlertModal");
-  document.getElementById("customAlertText").textContent = message;
-  document.getElementById("customAlertIcon").textContent = "❓";
-
-  const buttons = document.getElementById("customAlertButtons");
-  buttons.innerHTML = `
-    <button id="cancelConfirmBtn" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 font-semibold text-xs hover:bg-slate-700 transition">
-      Hủy bỏ
-    </button>
-    <button id="okConfirmBtn" class="px-5 py-2 rounded-xl bg-red-500 text-white font-bold text-xs uppercase tracking-wider hover:bg-red-400 transition">
-      Xác nhận
-    </button>
-  `;
-
-  document.getElementById("cancelConfirmBtn").onclick = closeCustomAlert;
-  document.getElementById("okConfirmBtn").onclick = () => {
-    closeCustomAlert();
-    onConfirm();
-  };
-
-  modal.classList.remove("hidden");
+function showCustomAlert(message, title = "Thông báo", icon = "⚠️") {
+  document.getElementById("customAlertTitle").textContent = title;
+  document.getElementById("customAlertMessage").textContent = message;
+  document.getElementById("customAlertIcon").textContent = icon;
+  document.getElementById("customAlertModal").classList.remove("hidden");
 }
 
 function closeCustomAlert() {
@@ -578,17 +555,7 @@ function closeCustomAlert() {
 }
 
 // =====================================================
-// CHUYỂN MÀN HÌNH
-// =====================================================
-function showScreen(id) {
-  ["heroScreen","registrationScreen","challengeScreen","resultScreen"]
-    .forEach(screen => document.getElementById(screen).classList.add("hidden"));
-
-  document.getElementById(id).classList.remove("hidden");
-}
-
-// =====================================================
-// BẮT ĐẦU CHALLENGE
+// BẮT ĐẦU VÀ QUẢN LÝ THỜI GIAN
 // =====================================================
 function startChallenge(event) {
   event.preventDefault();
@@ -600,6 +567,7 @@ function startChallenge(event) {
 
   document.getElementById("headerName").textContent = userProfile.name;
   document.getElementById("headerClass").textContent = userProfile.className;
+
   document.getElementById("appHeader").classList.remove("hidden");
 
   currentQuestionIndex = 0;
@@ -612,9 +580,6 @@ function startChallenge(event) {
   startTimer();
 }
 
-// =====================================================
-// TIMER
-// =====================================================
 function startTimer() {
   clearInterval(timerInterval);
 
@@ -627,7 +592,7 @@ function startTimer() {
 
     if (remainingSeconds <= 0) {
       clearInterval(timerInterval);
-      showAlert("Hết giờ làm bài! Hệ thống sẽ tự động tổng hợp kết quả của bạn.");
+      showCustomAlert("Hết thời gian làm bài! Hệ thống sẽ tự động tổng hợp bài nộp của bạn.", "Hết Giờ", "⏱");
       finishChallenge();
     }
   }, 1000);
@@ -636,13 +601,17 @@ function startTimer() {
 function updateTimerDisplay() {
   const min = Math.floor(remainingSeconds / 60);
   const sec = remainingSeconds % 60;
-  document.getElementById("timerDisplay").textContent =
-    `${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
+  const timerDisplay = document.getElementById("timerDisplay");
+  const timerBox = document.getElementById("timerBox");
+
+  timerDisplay.textContent = `${String(min).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
+
+  if (remainingSeconds <= 300) { // 5 phút cuối
+    timerBox.classList.add("border-red-500", "bg-red-950/40");
+    timerDisplay.classList.add("text-red-400");
+  }
 }
 
-// =====================================================
-// HIỂN THỊ CÂU HỎI
-// =====================================================
 function renderQuestion() {
   const q = questionsData[currentQuestionIndex];
   const level = levels[q.level];
@@ -658,8 +627,7 @@ function renderQuestion() {
   document.getElementById("xpTag").textContent = `+${q.xp} XP`;
   document.getElementById("questionText").textContent = q.text;
 
-  document.getElementById("progressBar").style.width =
-    `${((currentQuestionIndex) / total) * 100}%`;
+  document.getElementById("progressBar").style.width = `${((currentQuestionIndex) / total) * 100}%`;
 
   const codeBox = document.getElementById("codeBox");
   if (q.code) {
@@ -683,11 +651,11 @@ function renderQuestion() {
 
     q.options.forEach((option, index) => {
       const button = document.createElement("button");
-      button.className = "option-card w-full text-left p-4 rounded-xl border border-slate-700 bg-slate-900/90 text-sm md:text-base";
+      button.className = "option-card w-full text-left p-4 rounded-xl border border-slate-700/80 bg-slate-900/80 text-sm font-medium flex items-center";
 
       if (selectedOptionIndex === index) button.classList.add("selected");
 
-      button.innerHTML = `<span class="font-mono font-bold text-cyan-400 mr-2.5">${String.fromCharCode(65+index)}.</span>${escapeHtml(option)}`;
+      button.innerHTML = `<span class="font-black text-cyan-400 mr-3 text-base">${String.fromCharCode(65 + index)}.</span><span class="text-slate-200">${option}</span>`;
 
       if (lockedQuestions[currentQuestionIndex]) {
         button.disabled = true;
@@ -705,40 +673,29 @@ function renderQuestion() {
     essayContainer.classList.remove("hidden");
 
     const textarea = document.getElementById("essayAnswer");
-    textarea.placeholder = q.placeholder || "Nhập câu trả lời...";
+    textarea.placeholder = q.placeholder || "Nhập bài làm của em...";
     textarea.value = answers[currentQuestionIndex]?.essay || "";
     textarea.disabled = !!lockedQuestions[currentQuestionIndex];
   }
 
   if (lockedQuestions[currentQuestionIndex]) {
-    actionBtn.textContent =
-      currentQuestionIndex === total - 1 ? "HOÀN THÀNH 🏆" : "CÂU TIẾP →";
-
+    actionBtn.textContent = currentQuestionIndex === total - 1 ? "HOÀN THÀNH 🏆" : "CÂU TIẾP →";
     showFeedbackForLockedQuestion();
   } else {
     actionBtn.textContent = "LOCK ANSWER 🔒";
   }
 
-  document.getElementById("prevBtn").style.visibility =
-    currentQuestionIndex === 0 ? "hidden" : "visible";
+  document.getElementById("prevBtn").style.visibility = currentQuestionIndex === 0 ? "hidden" : "visible";
 }
 
 function selectOption(index) {
   if (lockedQuestions[currentQuestionIndex]) return;
 
   selectedOptionIndex = index;
-
-  answers[currentQuestionIndex] = {
-    type:"mcq",
-    selected:index
-  };
-
+  answers[currentQuestionIndex] = { type: "mcq", selected: index };
   renderQuestion();
 }
 
-// =====================================================
-// KHÓA CÂU TRẢ LỜI
-// =====================================================
 function lockAnswer() {
   if (lockedQuestions[currentQuestionIndex]) {
     nextQuestion();
@@ -749,16 +706,16 @@ function lockAnswer() {
 
   if (q.type === "mcq") {
     if (selectedOptionIndex === null || selectedOptionIndex === undefined) {
-      showAlert("Vui lòng chọn một lựa chọn trước khi khóa câu trả lời!");
+      showCustomAlert("Vui lòng lựa chọn một đáp án trước khi khóa câu trả lời.", "Chưa Chọn Đáp Án");
       return;
     }
 
     const isCorrect = selectedOptionIndex === q.answer;
 
     answers[currentQuestionIndex] = {
-      type:"mcq",
-      selected:selectedOptionIndex,
-      correct:isCorrect
+      type: "mcq",
+      selected: selectedOptionIndex,
+      correct: isCorrect
     };
 
     updateSkill(q.skill, isCorrect);
@@ -772,13 +729,13 @@ function lockAnswer() {
     const essay = document.getElementById("essayAnswer").value.trim();
 
     if (essay.length < 5) {
-      showAlert("Hãy nhập đầy đủ câu trả lời hoặc thuật toán trước khi khóa câu hỏi.");
+      showCustomAlert("Hãy viết lời giải hoặc mã Python trước khi khóa bài làm.", "Chưa Hoàn Thành Bài Làm");
       return;
     }
 
     answers[currentQuestionIndex] = {
-      type:"essay",
-      essay:essay
+      type: "essay",
+      essay: essay
     };
 
     if (userProfile.skillScores[q.skill]) {
@@ -796,10 +753,7 @@ function updateSkill(skill, correct) {
   if (!userProfile.skillScores[skill]) return;
 
   userProfile.skillScores[skill].total++;
-
-  if (correct) {
-    userProfile.skillScores[skill].correct++;
-  }
+  if (correct) userProfile.skillScores[skill].correct++;
 }
 
 function showFeedbackForLockedQuestion() {
@@ -813,14 +767,14 @@ function showFeedbackForLockedQuestion() {
   if (q.type === "mcq") {
     const correct = answers[currentQuestionIndex]?.correct;
 
-    title.textContent = correct ? "✅ Chính xác!" : "❌ Chưa chính xác";
+    title.textContent = correct ? "✅ Chính xác! (+ " + q.xp + " XP)" : "❌ Chưa chính xác";
     title.className = `font-bold mb-1 ${correct ? "text-emerald-400" : "text-rose-400"}`;
     text.textContent = q.explanation;
 
   } else {
-    title.textContent = "📝 Đã ghi nhận câu trả lời tự luận";
+    title.textContent = "📝 Đã ghi nhận bài làm tự luận";
     title.className = "font-bold mb-1 text-cyan-400";
-    text.textContent = "Nội dung tự luận & thuật toán của em đã được lưu để Giáo viên đánh giá chi tiết.";
+    text.textContent = "Bài làm của em đã được lưu thành công. Giáo viên sẽ đánh giá chi tiết thuật toán và code của em trong phần Teacher Dashboard.";
   }
 }
 
@@ -844,16 +798,13 @@ function updateHeader() {
   document.getElementById("xpDisplay").textContent = `${userProfile.totalXP} XP`;
 }
 
-// =====================================================
-// HOÀN THÀNH VÀ LƯU DỮ LIỆU
-// =====================================================
 async function finishChallenge() {
   clearInterval(timerInterval);
 
   const timeUsedSeconds = TOTAL_TIME - Math.max(remainingSeconds, 0);
   const minutes = Math.floor(timeUsedSeconds / 60);
   const seconds = timeUsedSeconds % 60;
-  const timeUsed = `${String(minutes).padStart(2,"0")}:${String(seconds).padStart(2,"0")}`;
+  const timeUsed = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 
   const unanswered = questionsData.filter((_, index) => !lockedQuestions[index]).length;
 
@@ -869,32 +820,29 @@ async function finishChallenge() {
     skillScores: userProfile.skillScores,
 
     answers: answers.map((answer, index) => ({
-      questionIndex:index,
-      question:questionsData[index].text,
-      type:questionsData[index].type,
-      category:questionsData[index].category,
-      answer:answer || null
+      questionIndex: index,
+      question: questionsData[index].text,
+      type: questionsData[index].type,
+      category: questionsData[index].category,
+      answer: answer || null
     })),
 
     unanswered
   };
 
-  // Dự phòng LocalStorage
-  const localRecords = JSON.parse(
-    localStorage.getItem("hkico_student_results") || "[]"
-  );
+  // Lưu dự phòng vào LocalStorage
+  const localRecords = JSON.parse(localStorage.getItem("hkico_student_results") || "[]");
   localRecords.push(record);
   localStorage.setItem("hkico_student_results", JSON.stringify(localRecords));
 
-  // Lưu Firestore Cloud
+  // Lưu lên Cloud Database
   if (typeof window.saveToCloudDatabase === "function") {
     await window.saveToCloudDatabase(record);
   }
 
   document.getElementById("resName").textContent = userProfile.name;
   document.getElementById("resXP").textContent = `${userProfile.totalXP} XP`;
-  document.getElementById("resCorrect").textContent =
-    `${userProfile.correctAnswersCount}/${questionsData.filter(q => q.type === "mcq").length}`;
+  document.getElementById("resCorrect").textContent = `${userProfile.correctAnswersCount}/${questionsData.filter(q => q.type === "mcq").length}`;
   document.getElementById("resTime").textContent = timeUsed;
 
   document.getElementById("diagnosticText").textContent = createDiagnosticComment();
@@ -907,20 +855,15 @@ function createDiagnosticComment() {
   const mcqTotal = questionsData.filter(q => q.type === "mcq").length;
   const percent = mcqTotal ? userProfile.correctAnswersCount / mcqTotal : 0;
 
-  if (percent >= 0.85) {
-    return "Thí sinh có nền tảng tư duy logic vững vàng và kiến thức lập trình xuất sắc! Nên tiếp tục rèn luyện thêm các dạng bài toán thuật toán nâng cao để tự tin chinh phục giải thưởng cao tại HKICO.";
+  if (percent >= 0.75) {
+    return "Em có nền tảng tư duy logic và kỹ năng Python rất vững chắc. Khả năng đọc code và phán đoán bước lặp chính xác. Hãy duy trì sự cẩn thận này cho các bài toán tự luận nâng cao!";
+  } else if (percent >= 0.5) {
+    return "Em nắm khá tốt kiến thức Python cơ bản và phép cắt chuỗi/danh sách. Cần luyện tập thêm kỹ năng debug và kiểm soát kỹ điều kiện dừng trong câu lệnh if/else.";
+  } else {
+    return "Em đã hoàn thành tốt nỗ lực làm bài. Hãy tiếp tục ôn tập kỹ phần biến, kiểu dữ liệu và cách hoạt động của vòng lặp for trong Python để đạt kết quả cao hơn nhé!";
   }
-
-  if (percent >= 0.6) {
-    return "Thí sinh thể hiện khả năng suy luận khá tốt. Cần tiếp tục trau dồi cú pháp Python cơ bản, kĩ năng đọc hiểu code Debug và rèn luyện kĩ năng phân tích thuật toán tự luận.";
-  }
-
-  return "Thí sinh đã bước đầu làm quen với các khái niệm lập trình. Giai đoạn tiếp theo nên tập trung rèn luyện tư duy từng bước (Step-by-step logic), cú pháp Python nền tảng và cách giải thích ý tưởng bài toán.";
 }
 
-// =====================================================
-// TEACHER DASHBOARD LOGIC
-// =====================================================
 function openTeacherLogin() {
   document.getElementById("teacherLoginModal").classList.remove("hidden");
   document.getElementById("teacherPinInput").value = "";
@@ -931,10 +874,10 @@ function closeTeacherLogin() {
 }
 
 function verifyTeacherPin() {
-  const pin = document.getElementById("teacherPinInput").value.trim();
+  const pin = document.getElementById("teacherPinInput").value;
 
   if (pin !== TEACHER_PIN) {
-    showAlert("Mã PIN giáo viên không chính xác. Vui lòng kiểm tra lại!");
+    showCustomAlert("Mã PIN giáo viên không đúng. Vui lòng thử lại.", "Lỗi Xác Thực");
     return;
   }
 
@@ -951,7 +894,7 @@ function closeTeacherModal() {
 }
 
 function getRecords() {
-  return window.cloudStudentResults && window.cloudStudentResults.length > 0
+  return (window.cloudStudentResults && window.cloudStudentResults.length)
     ? window.cloudStudentResults
     : JSON.parse(localStorage.getItem("hkico_student_results") || "[]");
 }
@@ -982,20 +925,20 @@ function renderTeacherTable() {
     const essayCount = (r.answers || []).filter(a => a.type === "essay" && a.answer?.essay).length;
 
     const tr = document.createElement("tr");
-    tr.className = "border-b border-slate-800/80 hover:bg-slate-900/60 transition";
+    tr.className = "hover:bg-slate-900/60 transition";
 
     tr.innerHTML = `
-      <td class="p-3 font-bold text-white">${escapeHtml(r.name || "-")}</td>
-      <td class="p-3 text-cyan-400 font-semibold">${escapeHtml(r.className || "-")}</td>
-      <td class="p-3 text-center text-amber-400 font-bold">${r.xp || 0} XP</td>
-      <td class="p-3 text-center text-emerald-400 font-semibold">${r.correctCount || 0}</td>
-      <td class="p-3 text-center"><span class="px-2 py-0.5 rounded bg-purple-500/20 text-purple-300">${essayCount} câu</span></td>
-      <td class="p-3 text-center text-slate-300 font-mono">${escapeHtml(r.timeUsed || "-")}</td>
-      <td class="p-3 text-xs text-slate-400 font-sans">${escapeHtml(r.timestamp || "-")}</td>
-      <td class="p-3 text-center">
+      <td class="p-3.5 font-bold text-white">${escapeHtml(r.name || "-")}</td>
+      <td class="p-3.5 text-cyan-400 font-medium">${escapeHtml(r.className || "-")}</td>
+      <td class="p-3.5 text-center text-yellow-400 font-bold">${r.xp || 0}</td>
+      <td class="p-3.5 text-center text-emerald-400 font-semibold">${r.correctCount || 0}</td>
+      <td class="p-3.5 text-center text-purple-300 font-medium">${essayCount} bài</td>
+      <td class="p-3.5 text-center text-slate-300">${escapeHtml(r.timeUsed || "-")}</td>
+      <td class="p-3.5 text-xs text-slate-400">${escapeHtml(r.timestamp || "-")}</td>
+      <td class="p-3.5 text-center">
         <button onclick="showStudentDetail(${index})"
-          class="px-3 py-1.5 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 font-sans text-xs font-semibold transition">
-          🔍 Xem bài
+          class="px-3 py-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs hover:bg-cyan-500/20 transition cursor-pointer">
+          Xem bài
         </button>
       </td>
     `;
@@ -1012,32 +955,32 @@ function showStudentDetail(index) {
 
   const detail = document.getElementById("detailContent");
   detail.innerHTML = `
-    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 flex justify-between items-center text-xs md:text-sm">
+    <div class="bg-slate-950 rounded-2xl p-4 border border-slate-800 flex justify-between items-center">
       <div>
-        <span class="text-white font-bold text-base">${escapeHtml(r.name || "-")}</span>
-        <span class="text-purple-400 font-bold ml-2">(${escapeHtml(r.className || "-")})</span>
+        <div class="font-bold text-lg text-white">${escapeHtml(r.name || "-")} • Lớp: ${escapeHtml(r.className || "-")}</div>
+        <div class="text-xs text-slate-400 mt-0.5">Thời điểm nộp: ${escapeHtml(r.timestamp || "-")}</div>
       </div>
-      <div class="text-amber-400 font-mono font-bold">${r.xp || 0} XP</div>
+      <div class="text-right">
+        <div class="text-yellow-400 font-bold text-lg">${r.xp || 0} XP</div>
+        <div class="text-xs text-emerald-400">Trắc nghiệm đúng: ${r.correctCount || 0}</div>
+      </div>
     </div>
   `;
 
   const essays = (r.answers || []).filter(a => a.type === "essay");
 
   if (!essays.length) {
-    detail.innerHTML += `<p class="text-slate-400 text-xs py-4 text-center">Thí sinh chưa hoàn thành câu tự luận nào.</p>`;
+    detail.innerHTML += `<p class="text-slate-400 text-sm italic text-center py-6">Học sinh chưa hoàn thành câu tự luận nào.</p>`;
   }
 
   essays.forEach((a, i) => {
     const box = document.createElement("div");
-    box.className = "bg-slate-950 rounded-xl p-4 border border-slate-800 space-y-2 text-xs md:text-sm";
+    box.className = "bg-slate-950 rounded-2xl p-5 border border-slate-800";
 
     box.innerHTML = `
-      <div class="text-cyan-400 font-bold flex items-center justify-between">
-        <span>Câu tự luận ${i + 1} (${escapeHtml(a.category || "Tự luận")})</span>
-      </div>
-      <div class="text-slate-200 font-medium">${escapeHtml(a.question || "")}</div>
-      <div class="text-xs text-slate-400 uppercase font-mono mt-2">Bài làm của học sinh:</div>
-      <pre class="p-3.5 rounded-xl bg-slate-900 text-emerald-300 font-mono text-xs overflow-x-auto border border-slate-800">${escapeHtml(a.answer?.essay || "Chưa nhập câu trả lời")}</pre>
+      <div class="text-cyan-400 font-bold text-sm mb-2">Câu tự luận ${i + 1} (${escapeHtml(a.category || "Tự luận")})</div>
+      <div class="text-slate-200 text-sm mb-3 leading-relaxed">${escapeHtml(a.question || "")}</div>
+      <pre class="p-4 rounded-xl bg-slate-900 border border-slate-800 text-emerald-300 font-mono text-xs overflow-x-auto">${escapeHtml(a.answer?.essay || "Chưa trả lời")}</pre>
     `;
 
     detail.appendChild(box);
@@ -1047,51 +990,49 @@ function showStudentDetail(index) {
 }
 
 function clearLocalData() {
-  showConfirm("Bạn có chắc chắn muốn xóa toàn bộ dữ liệu kết quả lưu trên máy này?", () => {
-    localStorage.removeItem("hkico_student_results");
-    renderTeacherTable();
-  });
+  localStorage.removeItem("hkico_student_results");
+  showCustomAlert("Đã xóa toàn bộ dữ liệu lưu trữ tại LocalStorage trên máy tính này.", "Đã Xóa Data", "🗑");
+  renderTeacherTable();
 }
 
 function exportCSV() {
   const records = getRecords();
 
   if (!records.length) {
-    showAlert("Không có dữ liệu bài làm để xuất CSV!");
+    showCustomAlert("Chưa có dữ liệu học sinh làm bài để xuất file CSV.", "Không Có Dữ Liệu");
     return;
   }
 
   let csv = "\uFEFF";
-  csv += "Họ và Tên,Lớp,XP,Số câu đúng MCQ,Thời gian làm bài,Ngày nộp,Số câu tự luận\n";
+  csv += "Họ và Tên,Lớp,Tổng XP,Trắc nghiệm đúng,Thời gian làm bài,Thời điểm nộp,Số câu tự luận\n";
 
   records.forEach(r => {
     const essayCount = (r.answers || []).filter(a => a.type === "essay" && a.answer?.essay).length;
     csv += `"${csvEscape(r.name)}","${csvEscape(r.className)}",${r.xp || 0},${r.correctCount || 0},"${csvEscape(r.timeUsed)}","${csvEscape(r.timestamp)}",${essayCount}\n`;
   });
 
-  const blob = new Blob([csv], {type:"text/csv;charset=utf-8;"});
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
 
   a.href = url;
-  a.download = `HKICO_Student_Results_${Date.now()}.csv`;
-  document.body.appendChild(a);
+  a.download = `HKICO_Results_${Date.now()}.csv`;
   a.click();
-  document.body.removeChild(a);
+
   URL.revokeObjectURL(url);
 }
 
 function csvEscape(value) {
-  return String(value || "").replaceAll('"','""');
+  return String(value || "").replaceAll('"', '""');
 }
 
 function escapeHtml(value) {
   return String(value || "")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
 
 function restartChallenge() {
@@ -1104,16 +1045,15 @@ function restartChallenge() {
   remainingSeconds = TOTAL_TIME;
 
   userProfile = {
-    name:"",
-    className:"",
-    totalXP:0,
-    correctAnswersCount:0,
-    skillScores:{
-      logic:{correct:0,total:0},
-      python:{correct:0,total:0},
-      debug:{correct:0,total:0},
-      algorithm:{correct:0,total:0},
-      problemSolving:{correct:0,total:0}
+    name: "",
+    className: "",
+    totalXP: 0,
+    correctAnswersCount: 0,
+    skillScores: {
+      logic: { correct: 0, total: 0 },
+      python: { correct: 0, total: 0 },
+      debug: { correct: 0, total: 0 },
+      problemSolving: { correct: 0, total: 0 }
     }
   };
 
@@ -1123,14 +1063,6 @@ function restartChallenge() {
 
   showScreen("registrationScreen");
 }
-
-window.renderTeacherTable = renderTeacherTable;
 </script>
-
-<!-- FOOTER -->
-<footer class="text-center py-4 text-xs text-slate-500 border-t border-slate-900/80 relative z-10">
-  HKICO Coding Challenge 2026 • Logic • Python • Debugging • Problem Solving
-</footer>
-
 </body>
 </html>
